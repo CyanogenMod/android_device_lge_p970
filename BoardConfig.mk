@@ -30,3 +30,34 @@ TARGET_PREBUILT_KERNEL := device/lge/p970/kernel
 BOARD_HAS_NO_SELECT_BUTTON := true
 # Use this flag if the board has a ext4 partition larger than 2gb
 #BOARD_HAS_LARGE_FILESYSTEM := true
+
+BOARD_HAVE_BLUETOOTH := true
+
+BOARD_USES_ALSA_AUDIO := true
+BUILD_WITH_ALSA_UTILS := true
+BOARD_USES_TI_CAMERA_HAL := true
+HARDWARE_OMX := true
+ifdef HARDWARE_OMX
+OMX_JPEG := true
+OMX_VENDOR := ti
+OMX_VENDOR_INCLUDES := \
+   hardware/ti/omx/system/src/openmax_il/omx_core/inc \
+   hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
+OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
+BOARD_OPENCORE_LIBRARIES := libOMX_Core
+BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
+BOARD_CAMERA_LIBRARIES := libcamera
+endif
+
+BOARD_WLAN_DEVICE := bcm4329
+WIFI_DRIVER_FW_STA_PATH         := "/system/etc/wifi/fw_bcm4329.bin"
+WIFI_DRIVER_FW_AP_PATH          := "/system/etc/wifi/fw_bcm4329_ap.bin"
+WIFI_DRIVER_MODULE_NAME         := "wireless"
+WIFI_DRIVER_MODULE_PATH         := "/system/lib/modules/wireless.ko"
+WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
+#WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329_p2p.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config dhd_use_p2p=1"
+#WPA_SUPPLICANT_VERSION          := VER_0_6_X
+WIFI_DRIVER_HAS_LGE_SOFTAP      := true
+BOARD_WPA_SUPPLICANT_DRIVER := WEXT
+
+BOARD_EGL_CFG := device/lge/p970/configs/egl.cfg

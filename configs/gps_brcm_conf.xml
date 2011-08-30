@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<glgps xmlns="http://www.glpals.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.glpals.com/ glconfig.xsd" >
+  <!--HAL Confguration: Please make sure to split the hal configuration when it's bigger than 1K bytes. -->
+  <hal 
+	  acPortName="/dev/ttyO0" lBaudRate="115200"  cLogEnabled="true" acLogDirectory="/data/gps/log" ltoFileName="lto.dat" 
+       enhanced-assisted="false"
+              
+       arp-supl-enable="true" arp-supl-cap-msb="true" arp-supl-cap-msa="true" arp-supl-cap-ecid="false"
+	   acSuplServer="lge.glpals.com" SuplPort="7275" 
+       
+	   />
+  <hal 
+       acNmeaOutName="/data/gpspipe"  
+       ResetOnStart="false"
+       gpioDelayMs="80"
+       ctrlPipe="/data/gps/glgpsctrl"
+       lcsApiSockName="/data/gps/lcs.socket"
+       acNvStoDir="/data/gps/"
+       gpioNStdbyPath="/sys/devices/platform/hub_gps_gpio/poweron"
+       gpioNResetPath="/sys/devices/platform/hub_gps_gpio/reset"
+       />
+  <!-- Sample HAL Conf to enable TLS CA checking and GPIO setting.
+       acSuplServer="www.spirent-lcs.com" SuplPort="7275" tlsCertPath="/system/etc/spirentroot.cer" 
+   -->
+
+  <!-- Parameters passed to GlEngine   -->
+  <!--gll
+         LogPriMask="LOG_DEBUG"
+         LogFacMask="LOG_GLLAPI | LOG_DEVIA | LOG_NMEA | LOG_RAWDATA | LOG_DEVMS | LOG_ASIC_IO | LOG_BBTEST | LOG_DEVET | LOG_MESM | LOG_DEVKF | LOG_DEVJG | LOG_DEVMR" 
+         FrqPlan="FRQ_PLAN_10MHZ_2PPM_10MHZ_100PPB" FrqPlan="FRQ_PLAN_10MHZ_2PPM" "FRQ_PLAN_16_8MHZ_2PPM"
+         RfType="GL_RF_PALS7" "GL_RF_BARRACUDA" "GL_RF_2075_LN22" "GL_RF_2075_BRCM" "GL_RF_PALS7_BRCM" "GL_RF_BARRACUDA_BRCM" "GL_RF_BARRACUDA_EXT_LNA"
+         NOTE: "GL_RF_BARRACUDA_EXT_LNA" should be used for BAS
+         FrqPlan="FRQ_PLAN_26MHZ_2PPM_26MHZ_300PPB"   
+  /-->
+
+  <!-- NOTE: BrcmRFwildBase, BrcmRFclkDiv, anBrcmRFclkRefHz only needed for Broadcom RF front end test chips
+  ( i.e. GL_RF_2075_BRCM and GL_RF_PALS7_BRCM )
+       BrcmRFwildBase="0x1E2D6409"
+       BrcmRFclkDiv="21"
+       BrcmRFclkRefHz="26000000"
+       pps-enable="false" pps-offset-madb shell chmod 777 /system/bin/gpsd/glgps_tmp
+s="0" pps-width-ns="100" 
+  -->
+
+  <gll 
+       LogPriMask="LOG_DEBUG"
+       LogFacMask="LOG_GLLAPI | LOG_DEVIA | LOG_NMEA | LOG_RAWDATA | LOG_DEVMS | LOG_ASIC_IO | LOG_BBTEST | LOG_DEVET | LOG_MESM | LOG_DEVKF | LOG_DEVJG | LOG_DEVMR | LOG_DEVCV"
+       FrqPlan="FRQ_PLAN_26MHZ_2PPM_26MHZ_300PPB"   
+       RfType="GL_RF_4751_DANUBE_EXT_LNA"   
+  />
+
+  <!-- List of jobs can be performed by the GPS controller    -->
+
+  <!-- The default job  all parameters are set to default values  -->
+  <job id="normal">
+      <task >
+      	<startup ignore_osc="true"  ignore_rom_alm="true"  ignore_nav="true" ignore_pos="true" ignore_ram_alm="true" ignore_time="true"/>
+      </task>
+    </job>
+
+    
+
+</glgps>

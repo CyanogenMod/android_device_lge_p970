@@ -1,0 +1,15 @@
+/dev/pvrsrvkm 0666 system graphics
+/dev/graphics/fb0 0640 system graphics
+/dev/ttyspi0            0660    radio   radio
+/dev/ttyspi1            0660    radio   radio
+/dev/pts*               0660    radio   radio
+/dev/akm8973_daemon 0666 compass system
+/dev/kxtf9_accel 0666 compass system
+/dev/akm8973_aot 0666 compass system
+/dev/mpu 0777 compass system
+/dev/mpuirq 0777 compass system
+/dev/accelirq 0777 compass system
+/dev/timerirq 0777 compass system
+/dev/motion_daemon 0666 compass system
+/dev/accel_api 0666 compass system
+
