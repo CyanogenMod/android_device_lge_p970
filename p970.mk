@@ -63,6 +63,14 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
 
+## Alsa configs
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
+
+PRODUCT_PACKAGES += \
+    alsa.omap3 \
+    libaudiomodemgeneric
+
 
 $(call inherit-product, build/target/product/full.mk)
 
