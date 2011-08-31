@@ -17,6 +17,10 @@ endif
 PRODUCT_COPY_FILES += \
     $(LOCAL_KERNEL):kernel
 
+## Dummy file to help RM identify the model
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/dummy-rm:root/bootimages/ON_480x800_08fps_0000.rle
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/init.p970.rc:root/init.rc \
     $(LOCAL_PATH)/ueventd.p970.rc:root/ueventd.lge.rc \
