@@ -12,4 +12,10 @@
 /dev/timerirq 0777 compass system
 /dev/motion_daemon 0666 compass system
 /dev/accel_api 0666 compass system
-
+/dev/DspBridge 0777 system system
+/dev/video0             0666    media   media
+/dev/video1             0666    media   media
+/dev/video2             0666    media   media
+/dev/video3             0666    media   media
+/dev/video4             0666    media   media
+/dev/video5             0666    media   media

@@ -21,6 +21,9 @@ loglevel 3
     export LOOP_MOUNTPOINT /mnt/obb
     export SD_EXT_DIRECTORY /sd-ext
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/core-junit.jar
+    export DSP_PATH /system/lib/dsp
+    export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
+    export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
 
 # Backward compatibility
     symlink /system/etc /etc
@@ -46,6 +49,9 @@ loglevel 3
     mkdir /data 0771 system system
     mkdir /cache 0771 system cache
     mkdir /config 0500 root root
+
+    mkdir /sqlite_stmt_journals 01777 root root
+    mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -380,6 +386,46 @@ on boot
     chmod 0666 /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkresult
     chmod 0666 /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkopmode
 
+    chmod 0666 /sys/devices/platform/omapdss/display0/name
+    chmod 0666 /sys/devices/platform/omapdss/display1/name
+    chmod 0666 /sys/devices/platform/omapdss/display0/enabled
+    chmod 0666 /sys/devices/platform/omapdss/display1/enabled
+    chmod 0666 /sys/devices/platform/omapdss/display0/timings
+    chmod 0666 /sys/devices/platform/omapdss/display1/timings
+    chmod 0666 /sys/devices/platform/omapdss/overlay0/manager
+    chmod 0666 /sys/devices/platform/omapdss/overlay1/manager
+    chmod 0666 /sys/devices/platform/omapdss/overlay2/manager
+    chmod 0666 /sys/devices/platform/omapdss/overlay0/zorder
+    chmod 0666 /sys/devices/platform/omapdss/overlay1/zorder
+    chmod 0666 /sys/devices/platform/omapdss/overlay2/zorder
+    chmod 0666 /sys/devices/platform/omapdss/overlay0/enabled
+    chmod 0666 /sys/devices/platform/omapdss/overlay1/enabled
+    chmod 0666 /sys/devices/platform/omapdss/overlay2/enabled
+    chmod 0666 /sys/devices/platform/omapdss/manager0/display
+    chmod 0666 /sys/devices/platform/omapdss/manager1/display
+    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_enabled
+    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_enabled
+    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_type
+    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_type
+    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_value
+    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_value
+    chmod 0666 /sys/devices/platform/omapdss/manager0/alpha_blending_enabled
+    chmod 0666 /sys/devices/platform/omapdss/manager1/alpha_blending_enabled
+    write /sys/devices/platform/omapdss/manager0/alpha_blending_enabled 1
+
+# MMS: Create log directory for fw3a_core
+    mkdir /data/log/fw3A 0775 root root
+
+# change permissions for alsa nodes
+    symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
+    symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
+    symlink /dev/snd/controlC0 /dev/controlC0
+    symlink /dev/snd/timer /dev/timer
+    chmod 0777 /dev/pcmC0D0c
+    chmod 0777 /dev/pcmC0D0p
+    chmod 0777 /dev/controlC0
+    chmod 0777 /dev/timer
+
 # Include extra init file
     import /system/etc/init.local.rc
 
@@ -419,6 +465,16 @@ on property:persist.service.adb.enable=0
 service pvrsrvinit /system/bin/pvrsrvinit
         user root
         oneshot
+
+# load DSP firmware
+service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
+    user root
+    group audio
+    oneshot
+
+service fw3a /system/bin/fw3a_core --dbgport=6660 --dbgremote --dbgpath=/data/log/fw3A
+    user root
+    group root
 
 service servicemanager /system/bin/servicemanager
     user system

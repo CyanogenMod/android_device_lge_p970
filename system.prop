@@ -24,3 +24,5 @@ ro.com.google.clientidbase.gmm=android-lge
 ro.com.google.clientidbase.yt=android-lge
 ro.com.google.clientidbase.am=android-lge
 
+# We can afford the 32m
+dalvik.vm.heapsize=32m
