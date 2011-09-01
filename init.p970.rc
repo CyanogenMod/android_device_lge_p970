@@ -110,9 +110,9 @@ loglevel 3
 on fs
 # mount mtd partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext3 /dev/block/mmcblk0p8 /system ro barrier=1 wait
+    mount ext4 /dev/block/mmcblk0p8 /system ro barrier=1 wait
         # We chown/chmod /data again so because mount is run as root + defaults
-    mount ext3 /dev/block/mmcblk0p9 /data nosuid nodev barrier=1 wait
+    mount ext4 /dev/block/mmcblk0p9 /data nosuid nodev barrier=1 wait
     chown system system /data
     chmod 0771 /data
 
@@ -129,7 +129,7 @@ on fs
         chmod 0777 /dev/block/mmcblk0p5
         chmod 0777 /dev/block/mmcblk0p12
 
-    mount ext3 /dev/block/mmcblk0p10 /cache nosuid nodev barrier=1 wait
+    mount ext4 /dev/block/mmcblk0p10 /cache nosuid nodev barrier=1 wait
 
     mkdir /lgdrm 0770 lgdrm lgdrm_acc
     mount ext3 /dev/block/mmcblk0p5 /lgdrm nosuid nodev
