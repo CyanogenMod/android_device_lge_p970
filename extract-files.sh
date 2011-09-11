@@ -119,5 +119,7 @@ adb pull /system/lib/dsp/wmadec_sn.dll64P ../../../vendor/$VENDOR/$DEVICE/propri
 adb pull /system/lib/dsp/wmv9dec_sn.dll64P ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/dsp/
 adb pull /system/lib/dsp/yuvconvert.l64p ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/dsp/
 
+# BT firmware
+adb pull /system/etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd  ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/firmware/
 echo "NOTE: Unless all transfers failed, errors above should be safe to ignore. Proceed with your build"
 exit

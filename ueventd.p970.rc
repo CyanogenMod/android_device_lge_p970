@@ -24,4 +24,4 @@
 /dev/omap-previewer 	0644	media	system
 /dev/omap-resizer 	0644	media	system
 /dev/omap-prev2resz 	0644	media	system
-
+/dev/ttyO1 0660 bluetooth bluetooth
