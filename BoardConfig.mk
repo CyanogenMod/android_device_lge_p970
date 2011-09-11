@@ -78,3 +78,7 @@ BOARD_HAS_LGE_FFC := true
 #BOARD_USES_CAMERAID_PARAM := "video-input"
 # Overwrite number of overlay buffers
 #COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=4
+
+## Temporary: until the mic issues are figured out with the audio
+##            source, use the prop, which needs a modified ABI
+TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
