@@ -19,3 +19,9 @@
 /dev/video3             0666    media   media
 /dev/video4             0666    media   media
 /dev/video5             0666    media   media
+/dev/video6             0666    media   media
+/dev/video10             0666    media   media
+/dev/omap-previewer 	0644	media	system
+/dev/omap-resizer 	0644	media	system
+/dev/omap-prev2resz 	0644	media	system
+

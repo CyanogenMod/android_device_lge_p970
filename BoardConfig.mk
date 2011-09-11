@@ -1,4 +1,4 @@
-USE_CAMERA_STUB := true
+USE_CAMERA_STUB := false
 
 # inherit from the proprietary version
 -include vendor/lge/p970/BoardConfigVendor.mk
@@ -68,3 +68,11 @@ TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 665681920
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 1170259968
 BOARD_FLASH_BLOCK_SIZE := 131072
+
+BOARD_OMAP3_WITH_FFC := true
+BOARD_HAS_LGE_FFC := true
+
+#BOARD_CAMERA_FORCE_PREVIEWFORMAT := "yuv422i-yuyv"
+#BOARD_USES_CAMERAID_PARAM := "video-input"
+# Overwrite number of overlay buffers
+#COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=4

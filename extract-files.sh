@@ -23,13 +23,13 @@ mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/firmware
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi/softap
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/cert
-mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/omapcam/R05_MVEN001_LD2_ND0_IR0_SH0_FL0_SVEN001_DCCID1040
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/egl
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 
 # HAL
 adb pull /system/lib/hw/gralloc.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 adb pull /system/lib/hw/lights.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
+adb pull /system/lib/hw/overlay.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 adb pull /system/lib/hw/sensors.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 
 ## PVRSGX
@@ -59,13 +59,11 @@ adb pull /system/bin/glgps ../../../vendor/$VENDOR/$DEVICE/proprietary/bin/
 # Sensors
 adb pull /system/lib/libmpl.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
 adb pull /system/lib/libmllite.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
-adb pull /system/lib/libmlplatform.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/libmlplatform.so
+adb pull /system/lib/libmlplatform.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
 
 # Wifi
 adb pull /system/etc/wifi/fw_bcm4329.bin ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi/
 adb pull /system/etc/wifi/fw_bcm4329_ap.bin ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi/
-adb pull /system/lib/libmllite.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
-adb pull /system/lib/libmlplatform.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
 
 # DSP Firmware
 adb pull /system/lib/libaffw_2.0.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/

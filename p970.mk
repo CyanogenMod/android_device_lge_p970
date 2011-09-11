@@ -106,6 +106,12 @@ PRODUCT_PACKAGES += \
     libOMX.TI.AMR.decode \
     libOMX.TI.G726.decode
 
+# OpenMAX IL configuration
+TI_OMX_POLICY_MANAGER := hardware/ti/omx/system/src/openmax_il/omx_policy_manager
+PRODUCT_COPY_FILES += \
+    $(TI_OMX_POLICY_MANAGER)/src/policytable.tbl:system/etc/policytable.tbl \
+    $(LOCAL_PATH)/media_profiles.xml:system/etc/media_profiles.xml
+
 PRODUCT_PACKAGES += \
     libomap_mm_library_jni
 

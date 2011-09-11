@@ -426,6 +426,9 @@ on boot
     chmod 0777 /dev/controlC0
     chmod 0777 /dev/timer
 
+    chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
+
 # Include extra init file
     import /system/etc/init.local.rc
 
