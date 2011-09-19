@@ -111,7 +111,7 @@ on fs
 # mount mtd partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /dev/block/mmcblk0p8 /system ro barrier=1 wait
-        # We chown/chmod /data again so because mount is run as root + defaults
+    # We chown/chmod /data again so because mount is run as root + defaults
     mount ext4 /dev/block/mmcblk0p9 /data nosuid nodev barrier=1 wait
     chown system system /data
     chmod 0771 /data
@@ -440,6 +440,21 @@ on boot
     chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
 
+    # Batt gauge error detection
+    chmod 0666 /sys/bus/platform/drivers/twl4030_bci/twl4030_bci/gauge_if
+
+    # Enabling sleep in idle path
+    write /sys/power/sleep_while_idle 1
+
+    # Enabling Off mode
+    write /sys/power/enable_off_mode 1
+
+    # Enabling voltage off while idle
+    write /sys/power/voltage_off_while_idle 1
+
+    # Permissions for setting the DSP Frequency
+    chown media root /sys/power/dsp_freq
+
 # Include extra init file
     import /system/etc/init.local.rc
 
@@ -502,6 +517,7 @@ service vold /system/bin/vold
 
 service netd /system/bin/netd
     socket netd stream 0660 root system
+    socket dnsproxyd stream 0660 root inet
 
 service debuggerd /system/bin/debuggerd
 
