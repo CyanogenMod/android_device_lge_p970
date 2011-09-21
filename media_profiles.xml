@@ -87,8 +87,8 @@
                    frameRate="30" />
 
             <Audio codec="aac"
-                   bitRate="96000"
-                   sampleRate="16000"
+                   bitRate="8000"
+                   sampleRate="8000"
                    channels="1" />
         </EncoderProfile>
 
@@ -100,8 +100,8 @@
                    frameRate="30" />
 
             <Audio codec="aac"
-                   bitRate="96000"
-                   sampleRate="16000"
+                   bitRate="8000"
+                   sampleRate="8000"
                    channels="1" />
         </EncoderProfile>
 
