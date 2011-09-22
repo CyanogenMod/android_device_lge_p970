@@ -244,6 +244,7 @@ on post-fs
 
     chmod 0777 /data/misc/wifi/config_mac
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/dhcp 0777 dhcp dhcp
     setprop wifi.supplicant_scan_interval 20
     setprop wifi.interface wlan0
 
