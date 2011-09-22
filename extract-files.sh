@@ -21,6 +21,7 @@ rm -rf ../../../vendor/$VENDOR/$DEVICE
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/bin
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/firmware
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi
+mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/omapcam
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/wifi/softap
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/cert
 mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/egl
@@ -29,7 +30,6 @@ mkdir -p ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 # HAL
 adb pull /system/lib/hw/gralloc.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 adb pull /system/lib/hw/lights.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
-adb pull /system/lib/hw/overlay.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 adb pull /system/lib/hw/sensors.omap3.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw
 
 ## PVRSGX
@@ -121,5 +121,31 @@ adb pull /system/lib/dsp/yuvconvert.l64p ../../../vendor/$VENDOR/$DEVICE/proprie
 
 # BT firmware
 adb pull /system/etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd  ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/firmware/
+
+## Camera and related blobs
+adb pull /system/lib/libyuvfastconvert.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libicapture.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libicamera.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libcapl.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libcameraalgo.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libcamera.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libarcsoft_camera_func.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libImagePipeline.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/etc/omapcam/imx072_dtp.dat  ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/omapcam/
+adb pull /system/etc/omapcam/imx072.rev  ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/omapcam/
+adb pull /system/etc/omapcam/fw3a.conf  ../../../vendor/$VENDOR/$DEVICE/proprietary/etc/omapcam/
+
+## OMX 720p libraries
+adb pull /system/lib/libOMX.TI.mp4.splt.Encoder.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libOMX.TI.720P.Encoder.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libOMX.TI.720P.Decoder.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libOMX.ITTIAM.AAC.encode.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libOMX.ITTIAM.AAC.decode.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/libOMX.TI.h264.splt.Encoder.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+
+## Audio HAL (temporary until amp problems are fixed)
+adb pull /system/lib/libaudio.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
+adb pull /system/lib/hw/alsa.omap3.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw/
+
 echo "NOTE: Unless all transfers failed, errors above should be safe to ignore. Proceed with your build"
 exit

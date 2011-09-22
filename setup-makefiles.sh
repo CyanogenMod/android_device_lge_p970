@@ -71,7 +71,6 @@ EOF
 # HAL
 PRODUCT_COPY_FILES += \\
     vendor/__VENDOR__/__DEVICE__/proprietary/lib/hw/gralloc.omap3.so:system/lib/hw/gralloc.omap3.so \\
-    vendor/__VENDOR__/__DEVICE__/proprietary/lib/hw/overlay.omap3.so:system/lib/hw/overlay.omap3.so \\
     vendor/__VENDOR__/__DEVICE__/proprietary/lib/hw/lights.omap3.so:system/lib/hw/lights.omap3.so \\
     vendor/__VENDOR__/__DEVICE__/proprietary/lib/hw/sensors.omap3.so:system/lib/hw/sensors.omap3.so
 
@@ -169,6 +168,36 @@ PRODUCT_COPY_FILES += \\
 ## BT Firmware
 PRODUCT_COPY_FILES += \\
     vendor/__VENDOR__/__DEVICE__/proprietary/etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd:system/etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd
+
+## Camera and related blobs
+PRODUCT_COPY_FILES += \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libyuvfastconvert.so:system/lib/libyuvfastconvert.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libicapture.so:system/lib/libicapture.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libicamera.so:system/lib/libicamera.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libcapl.so:system/lib/libcapl.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libcameraalgo.so:system/lib/libcameraalgo.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libcamera.so:obj/lib/libcamera.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libcamera.so:system/lib/libcamera.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libarcsoft_camera_func.so:system/lib/libarcsoft_camera_func.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libImagePipeline.so:system/lib/libImagePipeline.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/etc/omapcam/imx072_dtp.dat:system/etc/omapcam/imx072_dtp.dat \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/etc/omapcam/imx072.rev:system/etc/omapcam/imx072.rev \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/etc/omapcam/fw3a.conf:system/etc/omapcam/fw3a.conf
+
+## OMX 720p libraries
+PRODUCT_COPY_FILES += \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.TI.mp4.splt.Encoder.so:system/lib/libOMX.TI.mp4.splt.Encoder.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.TI.720P.Encoder.so:system/lib/libOMX.TI.720P.Encoder.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.TI.720P.Decoder.so:system/lib/libOMX.TI.720P.Decoder.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.ITTIAM.AAC.encode.so:system/lib/libOMX.ITTIAM.AAC.encode.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.ITTIAM.AAC.decode.so:system/lib/libOMX.ITTIAM.AAC.decode.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libOMX.TI.h264.splt.Encoder.so:system/lib/libOMX.TI.h264.splt.Encoder.so
+
+## Audio HALs (temporary)
+PRODUCT_COPY_FILES += \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libaudio.so:obj/lib/libaudio.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/libaudio.so:system/lib/libaudio.so \\
+    vendor/__VENDOR__/__DEVICE__/proprietary/lib/hw/alsa.omap3.so:system/lib/hw/alsa.omap3.so
 
 EOF
 

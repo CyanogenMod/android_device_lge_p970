@@ -27,6 +27,8 @@ endif
 
 TARGET_PREBUILT_KERNEL := device/lge/p970/kernel
 
+BOARD_NEEDS_CUTILS_LOG := true
+
 BOARD_HAS_NO_SELECT_BUTTON := true
 # Use this flag if the board has a ext4 partition larger than 2gb
 #BOARD_HAS_LARGE_FILESYSTEM := true
@@ -37,7 +39,7 @@ BOARD_USE_BROADCOM_FM_VOLUME_HACK := true
 
 BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
-BOARD_USES_TI_OMAP_MODEM_AUDIO := true
+#BOARD_USES_TI_OMAP_MODEM_AUDIO := true
 
 BOARD_USES_TI_CAMERA_HAL := true
 HARDWARE_OMX := true
@@ -72,13 +74,15 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 1170259968
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 BOARD_OMAP3_WITH_FFC := true
+BOARD_HAS_OMAP3_FW3A_LIBCAMERA := true
 BOARD_HAS_LGE_FFC := true
 
 #BOARD_CAMERA_FORCE_PREVIEWFORMAT := "yuv422i-yuyv"
 #BOARD_USES_CAMERAID_PARAM := "video-input"
 # Overwrite number of overlay buffers
-#COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=4
+COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=6
 
 ## Temporary: until the mic issues are figured out with the audio
 ##            source, use the prop, which needs a modified ABI
 TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
+TARGET_PROVIDES_LIBAUDIO := true

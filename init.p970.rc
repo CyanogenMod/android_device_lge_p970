@@ -106,6 +106,7 @@ loglevel 3
     mkdir /dvp/userdata 0771 system system
 #[LGE_end] hyunwoong.ahn
 
+    chown system system /sys/class/leds/lcd-backlight/als
 
 on fs
 # mount mtd partitions

@@ -26,3 +26,7 @@ ro.com.google.clientidbase.am=android-lge
 
 # We can afford the 32m
 dalvik.vm.heapsize=32m
+
+# Dummy LGE lightsensor
+ro.hardware.respect_als=true
+
