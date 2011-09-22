@@ -7,6 +7,8 @@ sysclktz 0
 
 loglevel 3
 
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
+
 # setup the global environment
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export LD_LIBRARY_PATH /vendor/lib:/system/lib
@@ -618,6 +620,9 @@ service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
 
 on property:dev.bootcomplete=1
     write /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "ondemand"
+    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
+    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 40000
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -BKA wlan0
     disabled
