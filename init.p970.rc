@@ -462,6 +462,21 @@ on boot
 # Include extra init file
     import /system/etc/init.local.rc
 
+# gps permissions
+    chown system system /sys/devices/platform/hub_gps_gpio/poweron
+    chown system system /sys/devices/platform/hub_gps_gpio/reset
+    mkdir /data/gps
+    chmod 777 /data/gps
+    mkdir /data/gps/var
+    chmod 777 /data/gps/var
+    mkdir /data/gps/var/run
+    chmod 777 /data/gps/var/run
+    mkdir /data/gps/log
+    chmod 777 /data/gps/log
+    mkdir /data/cache
+    chmod 777 /data/cache
+
+
 # Run sysinit
     exec /system/bin/sysinit
 
@@ -616,7 +631,6 @@ service dumpstate /system/bin/dumpstate -s
 service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
     user root
     group system
-    oneshot
 
 on property:dev.bootcomplete=1
     write /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable 0
