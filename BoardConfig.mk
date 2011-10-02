@@ -39,7 +39,7 @@ BOARD_USE_BROADCOM_FM_VOLUME_HACK := true
 
 BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
-#BOARD_USES_TI_OMAP_MODEM_AUDIO := true
+BOARD_USES_TI_OMAP_MODEM_AUDIO := true
 
 BOARD_USES_TI_CAMERA_HAL := true
 HARDWARE_OMX := true
@@ -54,6 +54,8 @@ BOARD_OPENCORE_LIBRARIES := libOMX_Core
 BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
 BOARD_CAMERA_LIBRARIES := libcamera
 endif
+
+BOARD_MOBILEDATA_INTERFACE_NAME := "vsnet0"
 
 BOARD_WLAN_DEVICE := bcm4329
 WIFI_DRIVER_FW_STA_PATH         := "/system/etc/wifi/fw_bcm4329.bin"
@@ -75,14 +77,10 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 BOARD_OMAP3_WITH_FFC := true
 BOARD_HAS_OMAP3_FW3A_LIBCAMERA := true
-BOARD_HAS_LGE_FFC := true
 
 #BOARD_CAMERA_FORCE_PREVIEWFORMAT := "yuv422i-yuyv"
 #BOARD_USES_CAMERAID_PARAM := "video-input"
 # Overwrite number of overlay buffers
 COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=6
 
-## Temporary: until the mic issues are figured out with the audio
-##            source, use the prop, which needs a modified ABI
-TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
 TARGET_PROVIDES_LIBAUDIO := true

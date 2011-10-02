@@ -69,8 +69,8 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += \
     libskiahw \
-    overlay.omap3 \
-    alsa.omap3 \
+    overlay.p970 \
+    alsa.p970 \
     acoustics.default \
     libaudiomodemgeneric
 

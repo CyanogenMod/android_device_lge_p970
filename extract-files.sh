@@ -143,9 +143,5 @@ adb pull /system/lib/libOMX.ITTIAM.AAC.encode.so  ../../../vendor/$VENDOR/$DEVIC
 adb pull /system/lib/libOMX.ITTIAM.AAC.decode.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
 adb pull /system/lib/libOMX.TI.h264.splt.Encoder.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
 
-## Audio HAL (temporary until amp problems are fixed)
-adb pull /system/lib/libaudio.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/
-adb pull /system/lib/hw/alsa.omap3.so  ../../../vendor/$VENDOR/$DEVICE/proprietary/lib/hw/
-
 echo "NOTE: Unless all transfers failed, errors above should be safe to ignore. Proceed with your build"
 exit
