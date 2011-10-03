@@ -507,6 +507,10 @@ LOGV("%s", __FUNCTION__);
             control.set("HandsfreeR Mux", "AudioR2");
             control.set("HandsfreeL Mux", "AudioL2");
             control.set("ExtAmp", "Headset");
+	} else if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
+            control.set("HeadsetR Mixer AudioR2", 1); // on
+            control.set("HeadsetL Mixer AudioL2", 1); // on
+            control.set("ExtAmp", "Headset");
         } else {
             control.set("HeadsetR Mixer AudioR2", (unsigned int)0); // off
             control.set("HeadsetL Mixer AudioL2", (unsigned int)0); // off
@@ -542,6 +546,8 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     handle->curChannels = channels;
     if (devices & (AudioSystem::DEVICE_OUT_WIRED_HEADSET |
                 AudioSystem::DEVICE_OUT_EARPIECE)) {
+        control.set("ExtAmp", "Headset");
+    } else if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
         control.set("ExtAmp", "Headset");
     } else {
         control.set("ExtAmp", "Speaker");
