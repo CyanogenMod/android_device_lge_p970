@@ -541,12 +541,14 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     handle->curDev = devices;
     handle->curMode = mode;
     handle->curChannels = channels;
-    if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET) {
-        control.set("ExtAmp", "Headset");
-    } else if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
-        control.set("ExtAmp", "Headset");
-    } else {
-        control.set("ExtAmp", "Speaker");
+    /* In-call is handled by the voice modem stuff */
+    if (mode != AudioSystem::MODE_IN_CALL) {
+        if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET ||
+            devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
+            control.set("ExtAmp", "Headset");
+        } else {
+            control.set("ExtAmp", "Speaker");
+        }
     }
 }
 
