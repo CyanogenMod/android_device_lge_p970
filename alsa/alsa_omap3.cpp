@@ -486,10 +486,7 @@ LOGV("%s", __FUNCTION__);
     /* check whether the devices is input or not */
     /* for output devices */
     if (devices & 0x0000FFFF){
-        // Zoom2 board doesn't have earpiece device
-        // speaker device is used instead
-        if (devices & (AudioSystem::DEVICE_OUT_SPEAKER |
-                   AudioSystem::DEVICE_OUT_EARPIECE)) {
+        if (devices & AudioSystem::DEVICE_OUT_EARPIECE) {
             control.set("HandsfreeR Switch", 1); // on
             control.set("HandsfreeL Switch", 1); // on
             control.set("HandsfreeR Mux", "AudioR2");
@@ -544,8 +541,7 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     handle->curDev = devices;
     handle->curMode = mode;
     handle->curChannels = channels;
-    if (devices & (AudioSystem::DEVICE_OUT_WIRED_HEADSET |
-                AudioSystem::DEVICE_OUT_EARPIECE)) {
+    if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET) {
         control.set("ExtAmp", "Headset");
     } else if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
         control.set("ExtAmp", "Headset");
@@ -657,7 +653,13 @@ static status_t s_standby(alsa_handle_t *handle)
     LOGV("In omap3 standby\n");
     if (h) {
         ALSAControl control("hw:00");
-        control.set("ExtAmp", "OFF");
+        if (handle->curMode == AudioSystem::MODE_IN_CALL) {
+            if (handle->curDev & AudioModemInterface::AUDIO_MODEM_HEADSET) {
+                control.set("ExtAmp", "Headsetcall");
+            } else if (handle->curDev & AudioModemInterface::AUDIO_MODEM_HANDFREE) {
+                control.set("ExtAmp", "Spkcall");
+            }
+	}
         snd_pcm_drain(h);
         err = snd_pcm_close(h);
         if (err)

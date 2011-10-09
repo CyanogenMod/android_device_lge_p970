@@ -496,7 +496,7 @@ status_t AudioModemAlsa::voiceCallCodecSetHeadset()
     status_t error = NO_ERROR;
 
     // Capture path
-    error = mAlsaControl->set("ExtAmp", "Headset");
+    error = mAlsaControl->set("ExtAmp", "Headsetcall");
     error = mAlsaControl->set("Voice", "Headset");
 
     error = mAlsaControl->set("Analog Capture Volume",
@@ -657,7 +657,7 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHeadset()
 {
    status_t error = NO_ERROR;
 
-    error = mAlsaControl->set("ExtAmp", "Headset");
+    error = mAlsaControl->set("ExtAmp", "Headsetcall");
     error = mAlsaControl->set("Voice", "Headset");
     // Capture path
     if ((mPreviousAudioModemModes == AudioModemInterface::AUDIO_MODEM_HANDSET) ||
