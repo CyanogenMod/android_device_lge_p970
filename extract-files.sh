@@ -47,6 +47,7 @@ adb pull /system/bin/pvrsrvinit ../../../vendor/$VENDOR/$DEVICE/proprietary/bin/
 
 # Radio
 
+adb pull /system/bin/rild ../../../vendor/$VENDOR/$DEVICE/proprietary/bin
 adb pull /system/lib/lge-ril.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib
 adb pull /system/lib/libril.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib
 adb pull /system/lib/libini.so ../../../vendor/$VENDOR/$DEVICE/proprietary/lib
