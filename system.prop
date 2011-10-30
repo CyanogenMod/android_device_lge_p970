@@ -13,6 +13,7 @@ ro.telephony.call_ring.delay=3000
 ro.telephony.call_ring.absent=true
 ro.telephony.ril_class=lgestar
 rild.libpath=/system/lib/lge-ril.so
+rild.libargs=-d /dev/ttyspi0
 mobiledata.interfaces=vsnet0,vsnet1,vsnet2,vsnet3
 
 ro.opengles.version=131072
