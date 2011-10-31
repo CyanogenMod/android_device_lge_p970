@@ -20,5 +20,14 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-    <bool name="useCameraInterface">true</bool>
+    <!-- Full path to the sysfs toggle -->
+    <string name="flashDevice">/sys/class/leds/rt8515/brightness</string>
+
+    <!-- Lowest setting -->
+    <integer name="valueOn">40</integer>
+    <!-- Middle setting -->
+    <integer name="valueHigh">60</integer>
+    <!-- Highest setting, leave -1 if it doesn't exist -->
+    <integer name="valueDeathRay">99</integer>
+
 </resources>

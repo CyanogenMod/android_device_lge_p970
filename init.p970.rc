@@ -482,6 +482,9 @@ on boot
     mkdir /data/cache
     chmod 777 /data/cache
 
+    ## Torch perms
+    chown system camera /sys/class/leds/rt8515/brightness
+    chmod 0660 /sys/class/leds/rt8515/brightness
 
 # Run sysinit
     exec /system/bin/sysinit
