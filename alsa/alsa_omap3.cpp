@@ -485,7 +485,7 @@ LOGV("%s", __FUNCTION__);
 #endif
     /* check whether the devices is input or not */
     /* for output devices */
-    if (devices & 0x0000FFFF){
+    if (mode != AudioSystem::MODE_IN_CALL && devices & 0x0000FFFF){
         if (devices & AudioSystem::DEVICE_OUT_EARPIECE) {
             control.set("HandsfreeR Switch", 1); // on
             control.set("HandsfreeL Switch", 1); // on
