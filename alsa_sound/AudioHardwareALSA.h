@@ -65,6 +65,9 @@ struct alsa_device_t {
     status_t (*standby)(alsa_handle_t *);
     status_t (*route)(alsa_handle_t *, uint32_t, int);
     status_t (*voicevolume)(float);
+#ifdef HAVE_FM_RADIO
+    status_t (*fmvolume)(float);
+#endif
     status_t (*set)(const String8&);
     status_t (*resetDefaults)(alsa_handle_t *handle);
 };
@@ -306,6 +309,10 @@ public:
      * the software mixer will emulate this capability.
      */
     virtual status_t    setMasterVolume(float volume);
+
+#ifdef HAVE_FM_RADIO
+    virtual status_t    setFmVolume(float volume);
+#endif
 
     /**
      * setMode is called when the audio mode changes. NORMAL mode is for

@@ -329,6 +329,7 @@ uint32_t AudioPolicyManagerALSA::getDeviceForStrategy(routing_strategy strategy,
          break;
 
          case STRATEGY_SONIFICATION:
+         case STRATEGY_MEDIA_SONIFICATION:
 
               // If incall, just select the STRATEGY_PHONE device: The rest of the behavior is handled by
               // handleIncallSonification().
@@ -345,6 +346,11 @@ uint32_t AudioPolicyManagerALSA::getDeviceForStrategy(routing_strategy strategy,
 
         case STRATEGY_MEDIA: {
              uint32_t device2 = 0;
+
+             if (mForceUse[AudioSystem::FOR_MEDIA] == AudioSystem::FORCE_SPEAKER) {
+                 device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_SPEAKER;
+             }
+
 
 #ifdef WITH_A2DP
              if (mA2dpOutput != 0) {
@@ -363,7 +369,9 @@ uint32_t AudioPolicyManagerALSA::getDeviceForStrategy(routing_strategy strategy,
             }
             else {
 #endif
-                device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_AUX_DIGITAL;
+                if (mForceUse[AudioSystem::FOR_MEDIA] != AudioSystem::FORCE_SPEAKER) {
+                    device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_AUX_DIGITAL;
+                }
                 if (device2 == 0) {
                     device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE;
                 }
@@ -387,9 +395,15 @@ uint32_t AudioPolicyManagerALSA::getDeviceForStrategy(routing_strategy strategy,
                  }
            }
 
+#ifndef HAVE_FM_RADIO
             if (device2 == 0) {
                 device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_FM_TRANSMIT;
             }
+#else
+            if (device2 == 0) {
+                device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_FM;
+            }
+#endif
 
             if (device2 == 0) {
                 device2 = mAvailableOutputDevices & AudioSystem::DEVICE_OUT_SPEAKER;

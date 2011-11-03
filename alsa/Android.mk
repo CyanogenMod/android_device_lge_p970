@@ -22,7 +22,7 @@ ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
       LOCAL_CFLAGS += -DAUDIO_BLUETOOTH
   endif
 
-  LOCAL_C_INCLUDES += hardware/alsa_sound external/alsa-lib/include
+  LOCAL_C_INCLUDES += $(LOCAL_PATH)/../alsa_sound external/alsa-lib/include
   ifeq ($(strip $(BOARD_USES_TI_OMAP_MODEM_AUDIO)),true)
     LOCAL_C_INCLUDES += hardware/ti/omap3/modules/alsa
     ifeq ($(BOARD_HAVE_BLUETOOTH),true)

@@ -146,6 +146,16 @@ status_t AudioHardwareALSA::setMasterVolume(float volume)
         return INVALID_OPERATION;
 }
 
+#ifdef HAVE_FM_RADIO
+status_t AudioHardwareALSA::setFmVolume(float volume)
+{
+    if ((mALSADevice) && (mALSADevice->fmvolume))
+        return mALSADevice->fmvolume(volume);
+    else
+        return INVALID_OPERATION;
+}
+#endif
+
 status_t AudioHardwareALSA::setMode(int mode)
 {
     status_t status = NO_ERROR;

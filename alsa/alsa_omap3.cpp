@@ -46,7 +46,11 @@ static status_t s_close(alsa_handle_t *);
 static status_t s_standby(alsa_handle_t *);
 static status_t s_route(alsa_handle_t *, uint32_t, int);
 static status_t s_voicevolume(float);
+#ifdef HAVE_FM_RADIO
+static status_t s_fmvolume(float);
+#endif
 static status_t s_resetDefaults(alsa_handle_t *handle);
+static bool isFmOn = false;
 
 #ifdef AUDIO_MODEM_TI
     AudioModemAlsa *audioModem;
@@ -88,6 +92,9 @@ static int s_device_open(const hw_module_t* module, const char* name,
     dev->standby = s_standby;
     dev->route = s_route;
     dev->voicevolume = s_voicevolume;
+#ifdef HAVE_FM_RADIO
+    dev->fmvolume = s_fmvolume;
+#endif
     dev->resetDefaults = s_resetDefaults;
 
     *device = &dev->common;
@@ -475,6 +482,26 @@ void setFmControls(uint32_t devices, int mode)
 LOGV("%s", __FUNCTION__);
 }
 
+static void setFMEnabled(bool status) {
+    if (status == isFmOn)
+	return;
+
+    ALSAControl control("hw:00");
+    if (status) {
+	control.set("Analog Left AUXL Capture Switch", 1);
+	control.set("Analog Right AUXR Capture Switch", 1);
+	control.set("Left2 Analog Loopback Switch", 1);
+	control.set("Right2 Analog Loopback Switch", 1);
+    } else {
+	control.set("Analog Left AUXL Capture Switch", (unsigned int)0);
+	control.set("Analog Right AUXR Capture Switch", (unsigned int)0);
+	control.set("Left2 Analog Loopback Switch", (unsigned int)0);
+	control.set("Right2 Analog Loopback Switch", (unsigned int)0);
+    }
+    isFmOn = status;
+}
+
+
 void setDefaultControls(uint32_t devices, int mode)
 {
 LOGV("%s", __FUNCTION__);
@@ -491,11 +518,11 @@ LOGV("%s", __FUNCTION__);
             control.set("HandsfreeL Switch", 1); // on
             control.set("HandsfreeR Mux", "AudioR2");
             control.set("HandsfreeL Mux", "AudioL2");
-            control.set("ExtAmp", "Headset");
+            control.set("ExtAmp", isFmOn ? "HeadsetFMR" : "Headset");
         } else {
             control.set("HandsfreeR Switch", (unsigned int)0); // off
             control.set("HandsfreeL Switch", (unsigned int)0); // off
-            control.set("ExtAmp", "Speaker");
+            control.set("ExtAmp", isFmOn ? "SpkFMR" : "Speaker");
         }
 
         if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET) {
@@ -503,20 +530,25 @@ LOGV("%s", __FUNCTION__);
             control.set("HeadsetL Mixer AudioL2", 1); // on
             control.set("HandsfreeR Mux", "AudioR2");
             control.set("HandsfreeL Mux", "AudioL2");
-            control.set("ExtAmp", "Headset");
+            control.set("ExtAmp", isFmOn ? "HeadsetFMR" : "Headset");
 	} else if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
             control.set("HeadsetR Mixer AudioR2", 1); // on
             control.set("HeadsetL Mixer AudioL2", 1); // on
-            control.set("ExtAmp", "Headset");
+            control.set("ExtAmp", isFmOn ? "HeadsetFMR" : "Headset");
         } else {
             control.set("HeadsetR Mixer AudioR2", (unsigned int)0); // off
             control.set("HeadsetL Mixer AudioL2", (unsigned int)0); // off
-            control.set("ExtAmp", "Speaker");
+            control.set("ExtAmp", isFmOn ? "SpkFMR" : "Speaker");
         }
     }
 
     /* for input devices */
     if (devices >> 16) {
+        if (devices & AudioSystem::DEVICE_IN_FM_ANALOG) {
+            setFMEnabled(true);
+        } else {
+            setFMEnabled(false);
+        }
         if (devices & AudioSystem::DEVICE_IN_BUILTIN_MIC) {
             control.set("Analog Left Main Mic Capture Switch", 1); // on
             control.set("Analog Right Sub Mic Capture Switch", 1); // on
@@ -678,7 +710,10 @@ static status_t s_route(alsa_handle_t *handle, uint32_t devices, int mode)
 
     LOGD("route called for devices %08x in mode %d...", devices, mode);
 
-	if (devices == 0x0) return status;
+	if (devices == 0x0) { 
+		setFMEnabled(false);
+		return status;
+	}
 
     if (handle->handle && handle->curDev == devices && handle->curMode == mode)
         ; // Nothing to do
@@ -712,6 +747,37 @@ static status_t s_voicevolume(float volume)
 
     return status;
 }
+
+#ifdef HAVE_FM_RADIO
+
+#include <math.h>
+
+// change this value to change volume scaling
+static const float dBPerStep = 0.5f;
+// shouldn't need to touch these
+static const float dBConvert = -dBPerStep * 2.302585093f / 20.0f;
+static const float dBConvertInverse = 1.0f / dBConvert;
+static int logToLinear(float volume)
+{
+    return volume ? (((100 - int(dBConvertInverse * log(volume) + 0.5))*15)/100) : 0;
+}
+
+static status_t s_fmvolume(float volume)
+{
+    status_t status = NO_ERROR;
+    int vol = logToLinear(volume);
+    char level[10];
+
+    if (vol) {
+        sprintf(level,"LEVEL_%d",vol);
+    } else {
+        sprintf(level,"OFF",vol);
+    }
+    ALSAControl control("hw:00");
+    control.set("FMradio",level);
+    return status;
+}
+#endif
 
 static status_t s_resetDefaults(alsa_handle_t *handle)
 {
