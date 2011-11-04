@@ -118,6 +118,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     hwcomposer.omap3 \
+    lights.p970 \
     audio.a2dp.default \
     libaudioutils \
     libtiutils \

@@ -18,7 +18,6 @@ lib/libaf_lg_2.0.so
 lib/hw/sensors.omap3.so
 lib/hw/gps.omap3.so
 lib/hw/camera.omap3.so
-lib/hw/lights.omap3.so
 lib/libini.so
 lib/dsp/g729enc_sn.dll64P
 lib/dsp/nbamrdec_sn.dll64P
