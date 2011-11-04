@@ -486,6 +486,26 @@ on boot
     chown system camera /sys/class/leds/rt8515/brightness
     chmod 0660 /sys/class/leds/rt8515/brightness
 
+    ## liblights
+    chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/onoff
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_brightness
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_onoff
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_sync
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x06
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x07
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0D
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0E
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x10
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x11
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x03
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x04
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x09
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0A
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14
+
 # Run sysinit
     exec /system/bin/sysinit
 
