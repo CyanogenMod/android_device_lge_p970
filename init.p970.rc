@@ -666,6 +666,7 @@ on property:dev.bootcomplete=1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
     #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
     #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 40000
+    write /sys/devices/system/cpu/cpu0/cpufreq/turn_on_lg_dvfs 1
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -BKA wlan0
     disabled
