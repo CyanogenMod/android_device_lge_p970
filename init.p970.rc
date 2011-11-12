@@ -349,8 +349,8 @@ on boot
     setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-    setprop net.tcp.buffersize.gprs    4094,87380,110208,4096,16384,110208
-    #setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+    setprop net.tcp.buffersize.hspa    4094,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/type
