@@ -710,10 +710,10 @@ static status_t s_route(alsa_handle_t *handle, uint32_t devices, int mode)
 
     LOGD("route called for devices %08x in mode %d...", devices, mode);
 
-	if (devices == 0x0) { 
-		setFMEnabled(false);
-		return status;
-	}
+    if (devices == 0x0) { 
+        setFMEnabled(false);
+        return status;
+    }
 
     if (handle->handle && handle->curDev == devices && handle->curMode == mode)
         ; // Nothing to do
