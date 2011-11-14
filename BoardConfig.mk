@@ -65,9 +65,10 @@ WIFI_DRIVER_MODULE_NAME         := "wireless"
 WIFI_DRIVER_MODULE_PATH         := "/system/lib/modules/wireless.ko"
 WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
 #WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329_p2p.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config dhd_use_p2p=1"
-#WPA_SUPPLICANT_VERSION          := VER_0_6_X
+WPA_SUPPLICANT_VERSION          := VER_0_6_X
 WIFI_DRIVER_HAS_LGE_SOFTAP      := true
 BOARD_WPA_SUPPLICANT_DRIVER := WEXT
+BOARD_WEXT_NO_COMBO_SCAN	:= true
 
 BOARD_EGL_CFG := device/lge/p970/configs/egl.cfg
 
