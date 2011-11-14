@@ -71,7 +71,8 @@ PRODUCT_PACKAGES += \
     overlay.p970 \
     alsa.p970 \
     acoustics.default \
-    libaudiomodemgeneric
+    libaudiomodemgeneric \
+    prb
 
 # OMX components
 PRODUCT_PACKAGES += \

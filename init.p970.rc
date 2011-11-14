@@ -516,6 +516,12 @@ on boot
 service ueventd /sbin/ueventd
     critical
 
+service prb /sbin/prb
+    user root
+    disabled
+    oneshot
+    keycodes 114 116
+
 service console /system/bin/sh
     console
     disabled
@@ -695,3 +701,4 @@ service rawip_vsnet1 /system/bin/init.vsnet 1
    group radio cache inet misc
    disabled
    oneshot
+
