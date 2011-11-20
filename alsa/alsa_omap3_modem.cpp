@@ -43,6 +43,7 @@ namespace android
         dev, name, NULL\
     }
 
+static unsigned int lastSetVolume = 0;
 static voiceCallVolumeList
 voiceCallVolumeProp[] = {
     VOICE_CALL_VOLUME_PROP(AudioModemInterface::AUDIO_MODEM_HANDSET,
@@ -440,10 +441,10 @@ status_t AudioModemAlsa::voiceCallCodecSetHandset()
         }
 
         // Playback path
-        /*error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                                AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
+        error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                                lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
         error = mAlsaControl->set("Voice Digital Loopback Volume",
-                                AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);*/
+                                AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);
     }
 
     return error;
@@ -483,10 +484,10 @@ status_t AudioModemAlsa::voiceCallCodecSetHandfree()
     }
 
     // Playback path
-    /*error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                             AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
+    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                             lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
-                             AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);*/
+                             AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);
 
     return error;
 }
@@ -523,10 +524,10 @@ status_t AudioModemAlsa::voiceCallCodecSetHeadset()
     }
 
     // Playback path
-/*    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                             AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
+    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                             lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
-                             AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);*/
+                             AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);
 
     return error;
 }
@@ -589,10 +590,10 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandset()
         }
 
         // Playback path
-    /*    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                                AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
+        error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                                lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
         error = mAlsaControl->set("Voice Digital Loopback Volume",
-                                AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);*/
+                                AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);
 
     }
 
@@ -645,10 +646,10 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandfree()
     }
 
     // Playback path
-    /*error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                            AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
+    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                            lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
-                            AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);*/
+                            AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);
 
     return error;
 }
@@ -699,10 +700,10 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHeadset()
     }
 
     // Playback path
-    /*error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                            AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
+    error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
+                            lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
-                            AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);*/
+                            AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);
 
     return error;
 }
@@ -786,8 +787,8 @@ status_t AudioModemAlsa::voiceCallCodecStop()
     }
 
     // Playback path
-/*    error = mAlsaControl->set("DAC Voice Digital Downlink Volume", 0, 0);
-    error = mAlsaControl->set("Voice Digital Loopback Volume", 0, 0);*/
+    error = mAlsaControl->set("DAC Voice Digital Downlink Volume", 0, 0);
+    error = mAlsaControl->set("Voice Digital Loopback Volume", 0, 0);
 
     return error;
 }
@@ -909,6 +910,7 @@ status_t AudioModemAlsa::voiceCallVolume(ALSAControl *alsaControl, float volume)
             return error;
         }
         i++;
+        lastSetVolume = setVolume;
     }
     return NO_ERROR;
 }
