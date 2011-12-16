@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+if [ ! -s /data/misc/wifi/config ]; then
+	/system/bin/wifimac
+fi

@@ -702,3 +702,5 @@ service rawip_vsnet1 /system/bin/init.vsnet 1
    disabled
    oneshot
 
+service wlan_precheck /system/bin/wlan-precheck
+    oneshot

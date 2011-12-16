@@ -57,6 +57,7 @@ PRODUCT_COPY_FILES += \
 ## Wifi
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifimac/wlan-precheck:system/bin/wlan-precheck \
     $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
@@ -72,7 +73,8 @@ PRODUCT_PACKAGES += \
     alsa.p970 \
     acoustics.default \
     libaudiomodemgeneric \
-    prb
+    prb \
+    wifimac
 
 # OMX components
 PRODUCT_PACKAGES += \
