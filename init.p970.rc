@@ -1,3 +1,6 @@
+on boot-pause
+    exec sbin/chargerlogo
+
 on early-init
     start ueventd
 
