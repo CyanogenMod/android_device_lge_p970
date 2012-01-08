@@ -7,6 +7,9 @@ com.ti.omap_enhancement=true
 
 ro.sf.lcd_density=240
 
+#Sound config
+alsa.mixer.capture.master=Analog
+
 ## Radio stuffs
 ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=3000
