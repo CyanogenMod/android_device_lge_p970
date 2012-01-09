@@ -768,12 +768,13 @@ static status_t s_fmvolume(float volume)
     int vol = logToLinear(volume);
     char level[10];
 
+    ALSAControl control("hw:00");
+    control.set("Analog",3);
     if (vol) {
         sprintf(level,"LEVEL_%d",vol);
     } else {
-        sprintf(level,"OFF",vol);
+        sprintf(level,"OFF");
     }
-    ALSAControl control("hw:00");
     control.set("FMradio",level);
     return status;
 }

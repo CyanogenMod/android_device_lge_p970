@@ -9,7 +9,7 @@ ro.sf.lcd_density=240
 
 #Sound config
 alsa.mixer.capture.master=Analog
-alsa.mixer.playback.master=DAC2 Analog \
+alsa.mixer.playback.master=DAC2 Analog
 
 
 ## Radio stuffs
