@@ -81,33 +81,33 @@
 
         <EncoderProfile quality="hd" fileFormat="mp4" duration="60">
             <Video codec="h264"
-                   bitRate="6000000"
+                   bitRate="12000000"
                    width="1280"
                    height="720"
                    frameRate="30" />
 
             <Audio codec="aac"
-                   bitRate="8000"
-                   sampleRate="8000"
+                   bitRate="51200"
+                   sampleRate="44100"
                    channels="1" />
         </EncoderProfile>
 
         <EncoderProfile quality="high" fileFormat="mp4" duration="60">
             <Video codec="h264"
-                   bitRate="3000000"
+                   bitRate="8000000"
                    width="720"
                    height="480"
                    frameRate="30" />
 
             <Audio codec="aac"
-                   bitRate="8000"
-                   sampleRate="8000"
+                   bitRate="51200"
+                   sampleRate="44100"
                    channels="1" />
         </EncoderProfile>
 
         <EncoderProfile quality="low" fileFormat="3gp" duration="30">
             <Video codec="h263"
-                   bitRate="256000"
+                   bitRate="768000"
                    width="176"
                    height="144"
                    frameRate="30" />
@@ -132,15 +132,15 @@
 
     <EncoderProfile quality="high" fileFormat="3gp" duration="30">
       <Video codec="h264"
-             bitRate="4000000"
+             bitRate="6000000"
              width="640"
              height="480"
              frameRate="30" />
 
       <Audio codec="aac"
-             bitRate="128000"
+             bitRate="51200"
              sampleRate="44100"
-             channels="2" />
+             channels="1" />
     </EncoderProfile>
 
     <EncoderProfile quality="low" fileFormat="3gp" duration="30">
@@ -176,22 +176,22 @@
          or query the capabilities of the codec at all if it is disabled
     -->
     <VideoEncoderCap name="h264" enabled="true"
-        minBitRate="64000" maxBitRate="8000000"
+        minBitRate="64000" maxBitRate="12000000"
         minFrameWidth="96" maxFrameWidth="1280"
         minFrameHeight="96" maxFrameHeight="1280"
-        minFrameRate="5" maxFrameRate="33" />
+        minFrameRate="15" maxFrameRate="33" />
 
     <VideoEncoderCap name="h263" enabled="true"
         minBitRate="64000" maxBitRate="10000000"
         minFrameWidth="96" maxFrameWidth="1280"
         minFrameHeight="96" maxFrameHeight="1280"
-        minFrameRate="5" maxFrameRate="33" />
+        minFrameRate="15" maxFrameRate="33" />
 
     <VideoEncoderCap name="m4v" enabled="true"
         minBitRate="64000" maxBitRate="10000000"
         minFrameWidth="96" maxFrameWidth="1280"
         minFrameHeight="96" maxFrameHeight="1280"
-        minFrameRate="5" maxFrameRate="33" />
+        minFrameRate="15" maxFrameRate="33" />
 
     <AudioEncoderCap name="amrnb" enabled="true"
         minBitRate="1" maxBitRate="320000"
