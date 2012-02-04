@@ -26,6 +26,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ueventd.p970.rc:root/ueventd.lge.rc \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
+# Headset hook
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/Hookkey.kl:system/usr/keylayout/Hookkey.kl
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
