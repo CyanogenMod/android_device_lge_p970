@@ -769,7 +769,7 @@ static status_t s_fmvolume(float volume)
     char level[10];
 
     ALSAControl control("hw:00");
-    control.set("Analog",3);
+    control.set("Analog Capture Volume",0,0);
     if (vol) {
         sprintf(level,"LEVEL_%d",vol);
     } else {
