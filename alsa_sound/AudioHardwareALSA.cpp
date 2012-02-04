@@ -141,9 +141,14 @@ status_t AudioHardwareALSA::setVoiceVolume(float volume)
 status_t AudioHardwareALSA::setMasterVolume(float volume)
 {
     if (mMixer)
-        return mMixer->setMasterVolume(volume);
+        mMixer->setMasterVolume(volume);
     else
         return INVALID_OPERATION;
+
+    ALSAControl mControl("hw:00");
+    mControl.setMasterVolume(5); // 20100912 junyeop.kim@lge.com set the master volume gain for HW request [START_LGE]
+    return NO_ERROR;
+
 }
 
 #ifdef HAVE_FM_RADIO

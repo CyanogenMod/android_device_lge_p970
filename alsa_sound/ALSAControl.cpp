@@ -46,6 +46,80 @@ ALSAControl::~ALSAControl()
     if (mHandle) snd_ctl_close(mHandle);
 }
 
+
+/* TODO:
+ * replace the hard-coded _enumerated/_boolean/_integer by
+ * something better, also remove the hard-coded values_of_control
+ */
+
+ //[LG_FW_P970_MERGE Start] 20110719 jungsoo1221.lee - Headset L/R Volume Balance (For Dolby)
+ const char *control_elements_of_interest[] = {
+	 "Analog Capture Volume",
+	 /* change for donut branch -
+	  * kernel 2.6.29 has changed the mixer names
+	  */
+	 "Analog Left AUXL Capture Switch", //20101026 inbang.park@lge.com FM_RADIO_PORTING 
+	 "Analog Right AUXR Capture Switch",//20101026 inbang.park@lge.com FM_RADIO_PORTING
+	 "Left2 Analog Loopback Switch",
+	 "Right2 Analog Loopback Switch",
+	 "DAC2 AnalogL Playback Volume", // 20100426 junyeop.kim@lge.com FM radio audio Path [START_LGE]
+	 "DAC2 AnalogR Playback Volume"  // 20100426 junyeop.kim@lge.com FM radio audio Path [END_LGE]
+ };
+
+ static int g_t2_default_dac2_analogl, g_t2_default_dac2_analogr;	 /* LGE_CHANGE_S, [junyeop.kim@lge.com] 2010-04-24, Left/Right volume balance */
+
+ /* LGE_CHANGE_S, [junyeop.kim@lge.com] 2010-04-24, Left/Right volume balance */
+ int configure_T2_DAC2_AnalogL_Playback_Volume(snd_ctl_t *ctl,char on_off_status)
+ {
+	  snd_ctl_elem_value_t *value;
+ 
+	  snd_ctl_elem_value_alloca(&value);
+	  snd_ctl_elem_value_set_interface(value, SND_CTL_ELEM_IFACE_MIXER);
+	  snd_ctl_elem_value_set_name(value, control_elements_of_interest[5]);
+ 
+	 if (on_off_status) {
+		 g_t2_default_dac2_analogl = snd_ctl_elem_value_get_enumerated(value,0);
+		 snd_ctl_elem_value_set_enumerated(value,0, on_off_status);
+	 } else {
+		 snd_ctl_elem_value_set_enumerated(value,0, g_t2_default_dac2_analogl);
+	 }
+ 
+	 return(snd_ctl_elem_write(ctl, value));
+ }
+ 
+ int configure_T2_DAC2_AnalogR_Playback_Volume(snd_ctl_t *ctl,char on_off_status)
+ {
+	  snd_ctl_elem_value_t *value;
+ 
+	  snd_ctl_elem_value_alloca(&value);
+	  snd_ctl_elem_value_set_interface(value, SND_CTL_ELEM_IFACE_MIXER);
+	  snd_ctl_elem_value_set_name(value, control_elements_of_interest[6]);
+ 
+	 if (on_off_status) {
+		 g_t2_default_dac2_analogr = snd_ctl_elem_value_get_enumerated(value,0);
+		 snd_ctl_elem_value_set_enumerated(value,0, on_off_status);
+	 } else {
+		 snd_ctl_elem_value_set_enumerated(value,0, g_t2_default_dac2_analogr);
+	 }
+ 
+	 return(snd_ctl_elem_write(ctl, value));
+ }
+ //[LG_FW_P970_MERGE End] 20110719 jungsoo1221.lee - Headset L/R Volume Balance (For Dolby)
+
+status_t ALSAControl::setMasterVolume(int value)	// 20100515 junyeop.kim@lge.com set the master volume gain for HW request [START_LGE]
+{
+	LOGD("[LUCKYJUN77] setMasterVolume");
+//[LG_FW_P970_MERGE Start] 20110719 jungsoo1221.lee - Headset L/R Volume Balance (For Dolby)
+	configure_T2_DAC2_AnalogL_Playback_Volume(mHandle, value);
+	configure_T2_DAC2_AnalogR_Playback_Volume(mHandle, value);
+//[LG_FW_P970_MERGE End] 20110719 jungsoo1221.lee - Headset L/R Volume Balance (For Dolby)
+
+	set("DAC Voice Digital Downlink Volume", 0x00, 0);	//default vol (0x14 reg)
+
+	return NO_ERROR;
+}	// 20100515 junyeop.kim@lge.com set the master volume gain for HW request [START_LGE]
+
+
 status_t ALSAControl::getmin(const char *name, unsigned int &min)
 {
     if (!mHandle) {

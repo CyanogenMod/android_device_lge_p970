@@ -132,6 +132,8 @@ public:
 
     status_t                set(const char *name, const char *);
 
+    status_t                setMasterVolume(int value);         // 20100515 junyeop.kim@lge.com set the master volume gain for HW request [START_LGE]
+
     status_t                getmin(const char *name, unsigned int &max);
     status_t                getmax(const char *name, unsigned int &min);
 
