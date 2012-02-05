@@ -63,4 +63,6 @@
         <item>0</item>
     </integer-array>
 
+    <string name="default_wallpaper_component">com.android.wallpaper/.nexus.NexusWallpaper</string>
+
 </resources>
