@@ -353,6 +353,7 @@ on boot
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.hspa    4094,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.hsdpa    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
     chmod 0660 /sys/class/rfkill/rfkill0/state
@@ -548,6 +549,12 @@ on property:persist.service.adb.enable=1
 on property:persist.service.adb.enable=0
     stop adbd
 
+on property:service.adb.tcp.port=5555
+    restart adbd
+
+on property:service.adb.tcp.port=-1
+    restart adbd
+
 service pvrsrvinit /system/bin/pvrsrvinit
         user root
         oneshot
@@ -634,6 +641,12 @@ service opush /system/bin/sdptool add --channel=12 OPUSH
     oneshot
 
 service pbap /system/bin/sdptool add --channel=19 PBAP
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service map /system/bin/sdptool add --channel=16 MAS
     user bluetooth
     group bluetooth net_bt_admin
     disabled
