@@ -130,7 +130,7 @@
 
   <CamcorderProfiles cameraId="1">
 
-    <EncoderProfile quality="high" fileFormat="3gp" duration="30">
+    <EncoderProfile quality="high" fileFormat="mp4" duration="30">
       <Video codec="h264"
              bitRate="6000000"
              width="640"
