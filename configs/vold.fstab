@@ -1,2 +1,3 @@
-dev_mount sdcard /mnt/sdcard auto /devices/platform/goldfish_mmc.0 /devices/platform/mmci-omap-hs.0/mmc_host/mmc1
+dev_mount sdcard /mnt/sdcard auto /devices/platform/omap/omap_hsmmc.0/mmc_host
+
 

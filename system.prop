@@ -7,16 +7,10 @@ com.ti.omap_enhancement=true
 
 ro.sf.lcd_density=240
 
-#Sound config
-alsa.mixer.capture.master=Analog
-alsa.mixer.playback.master=DAC2 Analog
-
-
 ## Radio stuffs
 ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=3000
 ro.telephony.call_ring.absent=true
-ro.telephony.ril_class=lgestar
 rild.libpath=/system/lib/lge-ril.so
 rild.libargs=-d /dev/ttyspi0
 mobiledata.interfaces=vsnet0,vsnet1,vsnet2,vsnet3
@@ -37,4 +31,3 @@ dalvik.vm.heapsize=32m
 
 # Dummy LGE lightsensor
 ro.hardware.respect_als=true
-

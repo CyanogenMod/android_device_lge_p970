@@ -1,109 +1,26 @@
-on boot-pause
-    exec sbin/chargerlogo
+import init.p970.usb.rc
 
 on early-init
-    start ueventd
-
-on init
-
-sysclktz 0
-
-loglevel 3
-
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
-
-# setup the global environment
-    export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
-    export LD_LIBRARY_PATH /vendor/lib:/system/lib
-    export ANDROID_BOOTLOGO 1
-    export ANDROID_CACHE /cache
-    export ANDROID_ROOT /system
-    export ANDROID_ASSETS /system/app
-    export ANDROID_DATA /data
-    export DOWNLOAD_CACHE /cache/download
-    export EXTERNAL_STORAGE /mnt/sdcard
-    export ASEC_MOUNTPOINT /mnt/asec
-    export LOOP_MOUNTPOINT /mnt/obb
-    export SD_EXT_DIRECTORY /sd-ext
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/core-junit.jar
-    export DSP_PATH /system/lib/dsp
-    export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
-    export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
-
-# Backward compatibility
-    symlink /system/etc /etc
-    symlink /sys/kernel/debug /d
-
-# Right now vendor lives on the same filesystem as system,
-# but someday that may change.
-    symlink /system/vendor /vendor
 
 # create mountpoints
     mkdir /mnt 0775 root system
     mkdir /mnt/sdcard 0000 system system
-
-# Create cgroup mount point for cpu accounting
-    mkdir /acct
-    mount cgroup none /acct cpuacct
-    mkdir /acct/uid
-
-# Backwards Compat - XXX: Going away in G*
+    mkdir /mnt/emmc 0000 system system
     symlink /mnt/sdcard /sdcard
 
-    mkdir /system
-    mkdir /data 0771 system system
-    mkdir /cache 0771 system cache
-    mkdir /config 0500 root root
+on init
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
+
+    export DSP_PATH /system/lib/dsp
+    export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
+    export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
+    export EXTERNAL_STORAGE /mnt/sdcard
+
+    # 2012.07.03 youmi.jun : To fix issue when CAMERA IPP enabled
+    symlink /system/lib /lib
 
     mkdir /sqlite_stmt_journals 01777 root root
     mount tmpfs tmpfs /sqlite_stmt_journals size=4m
-
-    # Directory for putting things only root should see.
-    mkdir /mnt/secure 0700 root root
-
-    # Directory for staging bindmounts
-    mkdir /mnt/secure/staging 0700 root root
-
-    # Directory-target for where the secure container
-    # imagefile directory will be bind-mounted
-    mkdir /mnt/secure/asec  0700 root root
-
-    # Secure container public mount points.
-    mkdir /mnt/asec  0700 root system
-    mount tmpfs tmpfs /mnt/asec mode=0755,gid=1000
-
-    # Filesystem image public mount points.
-    mkdir /mnt/obb 0700 root system
-    mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
-
-    mkdir /sd-ext 0771 system system
-
-    write /proc/sys/kernel/panic_on_oops 1
-    write /proc/sys/kernel/hung_task_timeout_secs 0
-    write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 10000000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
-    write /proc/sys/kernel/sched_compat_yield 1
-    write /proc/sys/kernel/sched_child_runs_first 0
-
-# Create cgroup mount points for process groups
-    mkdir /dev/cpuctl
-    mount cgroup none /dev/cpuctl cpu
-    chown system system /dev/cpuctl
-    chown system system /dev/cpuctl/tasks
-    chmod 0777 /dev/cpuctl/tasks
-    write /dev/cpuctl/cpu.shares 1024
-
-    mkdir /dev/cpuctl/fg_boost
-    chown system system /dev/cpuctl/fg_boost/tasks
-    chmod 0777 /dev/cpuctl/fg_boost/tasks
-    write /dev/cpuctl/fg_boost/cpu.shares 1024
-
-    mkdir /dev/cpuctl/bg_non_interactive
-    chown system system /dev/cpuctl/bg_non_interactive/tasks
-    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
-    # 5.0 %
-    write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
 #[LGE_start] hyunwoong.ahn
     mkdir /dvp 0771 system system
@@ -144,112 +61,8 @@ on fs
     mkdir /lgdrm 0770 lgdrm lgdrm_acc
     mount ext3 /dev/block/mmcblk0p5 /lgdrm nosuid nodev
 
-
-
-
-
-on post-fs
-
-    # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
-
-    # We chown/chmod /data again so because mount is run as root + defaults
-    chown system system /data
-    chmod 0771 /data
-
-    # Mount compressed filesystems
-    mount squashfs loop@/system/lib/modules/modules.sqf /system/lib/modules ro
-    mount squashfs loop@/system/xbin/xbin.sqf /system/xbin ro
-
-    # Create dump dir and collect dumps.
-    # Do this before we mount cache so eventually we can use cache for
-    # storing dumps on platforms which do not have a dedicated dump partition.
-   
-    mkdir /data/dontpanic
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
-
-    # Collect apanic data, free resources and re-arm trigger
-    copy /proc/apanic_console /data/dontpanic/apanic_console
-    chown root log /data/dontpanic/apanic_console
-    chmod 0640 /data/dontpanic/apanic_console
-
-    copy /proc/apanic_threads /data/dontpanic/apanic_threads
-    chown root log /data/dontpanic/apanic_threads
-    chmod 0640 /data/dontpanic/apanic_threads
-
-    write /proc/apanic_console 1
-
-    # Same reason as /data above
-    chown system cache /cache
-    chmod 0771 /cache
-
-    # This may have been created by the recovery system with odd permissions
-    chown system cache /cache/recovery
-    chmod 0770 /cache/recovery
-
-    #change permissions on vmallocinfo so we can grab it from bugreports
-    chown root log /proc/vmallocinfo
-    chmod 0440 /proc/vmallocinfo
-
-    #change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
-    chown root system /proc/kmsg
-    chmod 0440 /proc/kmsg
-    chown root system /proc/sysrq-trigger
-    chmod 0220 /proc/sysrq-trigger
-
-# create basic filesystem structure
-    mkdir /data/misc 01771 system misc
-    mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
-    mkdir /data/misc/bluetooth 0770 system system
-    mkdir /data/misc/keystore 0700 keystore keystore
-    mkdir /data/misc/vpn 0770 system system
-    mkdir /data/misc/systemkeys 0700 system system
-    mkdir /data/misc/vpn/profiles 0770 system system
-    # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0770 /data/misc/wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0771 shell shell
-    mkdir /data/local/tmp 0771 shell shell
-    mkdir /data/local/download 0771 system cache
-    mkdir /data/data 0771 system system
-    mkdir /data/app-private 0771 system system
-    mkdir /data/app 0771 system system
-    mkdir /data/property 0700 root root
-
-    mkdir /cache/download 0771 system cache
-
-    # create dalvik-cache and double-check the perms
-    mkdir /data/dalvik-cache 0771 system system
-    chown system system /data/dalvik-cache
-    chmod 0771 /data/dalvik-cache
-
-    mkdir /cache/dalvik-cache 0771 system system
-    chown system system /cache/dalvik-cache
-    chmod 0771 /cache/dalvik-cache
-
-    # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770
-    mkdir /cache/lost+found 0770
-
-    # double check the perms, in case lost+found already exists, and set owner
-    chown root root /data/lost+found
-    chmod 0770 /data/lost+found
-    chown root root /cache/lost+found
-    chmod 0770 /cache/lost+found
-
-    # allow net_raw to have access to /dev/socket directory
-    chown root net_raw /dev/socket
-    chmod 0775 /dev/socket
-
-    # allow system to modify cpufreq control files
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+on post-fs-data
+    setprop vold.post_fs_data_done 1
 
     chmod 0777 /data/misc/wifi/config_mac
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
@@ -258,115 +71,263 @@ on post-fs
     setprop wifi.interface wlan0
 
 on boot
-# basic network init
-    ifup lo
-    hostname localhost
-    domainname localdomain
+## NEW
 
-# set RLIMIT_NICE to allow priorities from 19 to -20
-    setrlimit 13 40 40
+    # Enabling sleep in idle path
+    write /sys/kernel/debug/pm_debug/sleep_while_idle 1
 
-# Define the oom_adj values for the classes of processes that can be
-# killed by the kernel.  These are used in ActivityManagerService.
-    setprop ro.FOREGROUND_APP_ADJ 0
-    setprop ro.VISIBLE_APP_ADJ 1
-    setprop ro.PERCEPTIBLE_APP_ADJ 2
-    setprop ro.HEAVY_WEIGHT_APP_ADJ 3
-    setprop ro.SECONDARY_SERVER_ADJ 4
-    setprop ro.BACKUP_APP_ADJ 5
-    setprop ro.HOME_APP_ADJ 6
-    setprop ro.HIDDEN_APP_MIN_ADJ 7
-    setprop ro.EMPTY_APP_ADJ 15
+    # Enabling Voltage OFF in idle path
+    write /sys/kernel/debug/pm_debug/voltage_off_while_idle 1
 
-# Define the memory thresholds at which the above process classes will
-# be killed.  These numbers are in pages (4k).
-    setprop ro.FOREGROUND_APP_MEM 2048
-    setprop ro.VISIBLE_APP_MEM 3072
-    setprop ro.PERCEPTIBLE_APP_MEM 4096
-    setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    setprop ro.SECONDARY_SERVER_MEM 6144
-    setprop ro.BACKUP_APP_MEM 6144
-    setprop ro.HOME_APP_MEM 6144
-    setprop ro.HIDDEN_APP_MEM 7168
-    setprop ro.EMPTY_APP_MEM 8192
+    # Enabling OFF mode
+    write /sys/kernel/debug/pm_debug/enable_off_mode 1
 
-# Write value must be consistent with the above properties.
-# Note that the driver only supports 6 slots, so we have combined some of
-# the classes into the same memory level; the associated processes of higher
-# classes will still be killed first.
-    write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
+    # Enable SmartReflex autocompensation on VDD1 & VDD2
+    write /sys/kernel/debug/smartreflex/sr_core/autocomp 1
+    write /sys/kernel/debug/smartreflex/sr_mpu_iva/autocomp 1
 
-    write /proc/sys/vm/overcommit_memory 1
-    write /proc/sys/vm/min_free_order_shift 4
-    write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,4096,6144,7168,8192
+    # Lower maximum frequency when screen is off
+	write /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 600000
 
-    # Set init its forked children's oom_adj.
-    write /proc/1/oom_adj -16
+    # cpufreq interactive governor: timer 20ms, min sample 20ms, hispeed 800MHz
+	write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+	write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 20000
+	write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 800000
 
-    # Tweak background writeout
-    write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
+	#Enablig DVFS with ondemand governor
+	write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+	write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
+	write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
-    # Permissions for System Server and daemons.
-    chown radio system /sys/android_power/state
-    chown radio system /sys/android_power/request_state
-    chown radio system /sys/android_power/acquire_full_wake_lock
-    chown radio system /sys/android_power/acquire_partial_wake_lock
-    chown radio system /sys/android_power/release_wake_lock
-    chown radio system /sys/power/state
-    chown radio system /sys/power/wake_lock
-    chown radio system /sys/power/wake_unlock
-    chmod 0660 /sys/power/state
-    chmod 0660 /sys/power/wake_lock
-    chmod 0660 /sys/power/wake_unlock
-    chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/leds/keyboard-backlight/brightness
-    chown system system /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/button-backlight/brightness
-    chown system system /sys/class/leds/jogball-backlight/brightness
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/red/device/grpfreq
-    chown system system /sys/class/leds/red/device/grppwm
-    chown system system /sys/class/leds/red/device/blink
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/red/device/grpfreq
-    chown system system /sys/class/leds/red/device/grppwm
-    chown system system /sys/class/leds/red/device/blink
-    chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/module/sco/parameters/disable_esco
-    chown system system /sys/kernel/ipv4/tcp_wmem_min
-    chown system system /sys/kernel/ipv4/tcp_wmem_def
-    chown system system /sys/kernel/ipv4/tcp_wmem_max
-    chown system system /sys/kernel/ipv4/tcp_rmem_min
-    chown system system /sys/kernel/ipv4/tcp_rmem_def
-    chown system system /sys/kernel/ipv4/tcp_rmem_max
-    chown root radio /proc/cmdline
+	# 2012.08.06, mannsik.chung@lge.com, Backup scaling governor. For use at zygot restart by GC.
+	# copy /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
+	write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak ondemand
 
-# Define TCP buffer sizes for various networks
-#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-    setprop net.tcp.buffersize.hspa    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.hsdpa    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+	chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
 
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chmod 0660 /sys/class/rfkill/rfkill0/type
-    chmod 0660 /sys/class/rfkill/rfkill1/state
-    chmod 0660 /sys/class/rfkill/rfkill1/type
-    chmod 0666 /sys/devices/platform/bd_address/bdaddr_if
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/type
-    write /sys/class/rfkill/rfkill0/state 0
+    # autosuspend root hubs immediatly after attached devices
+	write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
+	write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
+   
+    # change permissions for alsa nodes
+    symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
+    symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
+    symlink /dev/snd/controlC0 /dev/controlC0
+    symlink /dev/snd/timer /dev/timer
 
+    chown audio audio /dev/pcmC0D0c
+    chown audio audio /dev/pcmC0D0p
+    chown audio audio /dev/controlC0
+    chown audio audio /dev/timer
+
+    chmod 0777 /dev/controlC0
+    chmod 0777 /dev/timer
+    chmod 0777 /dev/snd/timer
+    chmod 0777 /dev/snd/controlC0
+    chmod 0777 /dev/snd/pcmC0D0c
+    chmod 0777 /dev/snd/pcmC0D0p
+    chmod 0777 /dev/snd/pcmC0D1c
+    chmod 0777 /dev/snd/pcmC0D1p
+
+# change permissions for modem
+    chmod 0660 /dev/ttyspi0
+    chown radio radio /dev/ttyspi0
+    chmod 0660 /dev/ttyspi1
+    chown radio radio /dev/ttyspi1
+    
+    # change permissions for bridge.  Symlink search directory
+    chmod 0777 /dev/DspBridge
+
+    # change permissions for Camera
+    chmod 0777 /dev/video5
+    chmod 0777 /dev/video0
+
+# change permissions for Overlay
+    chmod 0777 /dev/video1
+    chmod 0777 /dev/video2
+
+# TI Patch (If12e9caa) : permissions for isp resizer sysfs entries	
+		chmod 0777 /sys/devices/platform/dsscomp/isprsz/enable
+
+    chmod 0777 /dev/dsscomp
+		chmod 0777 /dev/ion
+
+# change permissions for overlay managers and display devices
+    chmod 0777 /sys/devices/platform/omapdss/manager0/name
+    chmod 0777 /sys/devices/platform/omapdss/manager1/name
+
+    chmod 0777 /sys/devices/platform/omapdss/display0/name
+    chmod 0777 /sys/devices/platform/omapdss/display1/name
+
+    chmod 0777 /sys/devices/platform/omapdss/display0/enabled
+    chmod 0777 /sys/devices/platform/omapdss/display1/enabled
+
+    chmod 0777 /sys/devices/platform/omapdss/display1/timings
+    chmod 0777 /sys/devices/platform/omapdss/display0/timings
+
+    chmod 0777 /sys/devices/platform/omapdss/overlay0/manager
+    chmod 0777 /sys/devices/platform/omapdss/overlay1/manager
+    chmod 0777 /sys/devices/platform/omapdss/overlay2/manager
+
+    chmod 0777 /sys/devices/platform/omapdss/overlay0/enabled
+    chmod 0777 /sys/devices/platform/omapdss/overlay1/enabled
+    chmod 0777 /sys/devices/platform/omapdss/overlay2/enabled
+
+    # change permissions for Previewer and Resizer
+    chmod 0777 /dev/omap-previewer
+    chmod 0777 /dev/omap-resizer
+
+    chmod 0777 /dev/video6
+    chmod 0777 /dev/video10
+    chmod 0777 /dev/omap-prev2resz
+
+    # Set timeout value for rmnet stats.
+    write /sys/devices/virtual/net/rmnet0/timeout_suspend 5000000
+
+
+    # Permissions for setting the DSP Frequency
+    chown media root /sys/power/dsp_freq
+
+
+    # SGX driver
+    chmod 0666 /dev/pvrsrvkm
+    
+     # change permission factory test
+    chmod 0775 /proc/driver/hmuic
+    chown system system /proc/driver/hmuic
+    chmod 0644 /sys/devices/platform/i2c_omap.1/i2c-1/1-004a/twl4030_keypad/key_test_mode
+    chown system system /sys/devices/platform/i2c_omap.1/i2c-1/1-004a/twl4030_keypad/key_test_mode
+    
+     #LED Permission is modified.
+    	chmod 0664 /sys/devices/platform/omapdss/display0/name
+	chmod 0664 /sys/devices/platform/omapdss/display1/name
+	chmod 0664 /sys/devices/platform/omapdss/display0/enabled
+	chmod 0664 /sys/devices/platform/omapdss/display1/enabled
+	chmod 0664 /sys/devices/platform/omapdss/display0/timings
+	chmod 0664 /sys/devices/platform/omapdss/display1/timings
+	chmod 0644 /sys/devices/platform/omapdss/overlay0/manager
+	chmod 0644 /sys/devices/platform/omapdss/overlay1/manager
+	chmod 0644 /sys/devices/platform/omapdss/overlay2/manager
+	chmod 0644 /sys/devices/platform/omapdss/overlay0/zorder
+	chmod 0644 /sys/devices/platform/omapdss/overlay1/zorder
+	chmod 0644 /sys/devices/platform/omapdss/overlay2/zorder
+	chmod 0644 /sys/devices/platform/omapdss/overlay0/enabled
+	chmod 0644 /sys/devices/platform/omapdss/overlay1/enabled
+	chmod 0644 /sys/devices/platform/omapdss/overlay2/enabled
+	chmod 0644 /sys/devices/platform/omapdss/manager0/display
+	chmod 0644 /sys/devices/platform/omapdss/manager1/display
+	chmod 0644 /sys/devices/platform/omapdss/manager0/trans_key_enabled
+	chmod 0644 /sys/devices/platform/omapdss/manager1/trans_key_enabled
+	chmod 0644 /sys/devices/platform/omapdss/manager0/trans_key_type
+	chmod 0644 /sys/devices/platform/omapdss/manager1/trans_key_type
+	chmod 0644 /sys/devices/platform/omapdss/manager0/trans_key_value
+	chmod 0644 /sys/devices/platform/omapdss/manager1/trans_key_value
+	chmod 0644 /sys/devices/platform/omapdss/manager0/alpha_blending_enabled
+	chmod 0644 /sys/devices/platform/omapdss/manager1/alpha_blending_enabled
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als_option
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als_option
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/onoff
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/onoff
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/alsgain_control
+	chown system system  /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/alsgain_control
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als_control
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als_control
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
+	write /sys/devices/platform/omapdss/manager0/alpha_blending_enabled 1
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0036/state
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0036/state
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x15
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x15
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x12
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x12  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x11
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x11  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x10
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x10  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0F
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0F  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0E
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0E  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0D
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0D 
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0C
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0C  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0B
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0B  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0A
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0A  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x09
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x09  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x08
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x08  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x07
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x07  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x06
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x06  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x05
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x05  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x04
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x04  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x03
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x03  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x02
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x02  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x01
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x01  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x00	
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x00  
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_brightness	
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_brightness 
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_sync
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_sync 
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_testmode	
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_testmode
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_onoff
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_onoff
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_start
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_start
+	chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable
+	chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/fw
+	chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/fw
+	chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/gripsuppression
+	chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/gripsuppression
+# [START_CommonFramework] sunkyu.yun@lge.com 2012-06-08 light sensor
+	chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_option
+	chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_option
+	chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/onoff
+	chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/onoff
+	chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/alsgain_control
+	chown system system  /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/alsgain_control
+	chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_control
+	chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_control
+	chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als
+	chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als
+# [END_CommonFramework] sunkyu.yun@lge.com 2012-06-08 light sensor
+
+# Sensor
+    chown system system /dev/akm8973_daemon
+	chown system system /dev/kxtf9_accel
+    chown system system /dev/akm8973_aot
+# LGE_CHANGE_S, ryu.seeyeol@lge.com, 2011-02-01, Sensors Porting (MPL V3.3 Release)
+    chmod 0777 /dev/mpu
+    chmod 0777 /dev/mpuirq
+    chmod 0777 /dev/accelirq
+    chmod 0777 /dev/timerirq
+# LGE_CHANGE_E, ryu.seeyeol@lge.com, 2011-02-01, Sensors Porting (MPL V3.3 Release)
+    chmod 0666 /dev/akm8973_daemon
+    chmod 0666 /dev/akm8973_aot
+	chmod 0666 /dev/kxtf9_accel
+    chown system system /dev/motion_daemon
+    chown system system /dev/accel_api
+    chmod 0666 /dev/motion_daemon
+    chmod 0666 /dev/accel_api
     chown system system /sys/devices/platform/motion_sensor/accel_onoff
     chown system system /sys/devices/platform/motion_sensor/accel_delay
     chown system system /sys/devices/platform/motion_sensor/compass_onoff
@@ -375,8 +336,17 @@ on boot
     chown system system /sys/devices/platform/motion_sensor/tilt_delay
     chown system system /sys/devices/platform/motion_sensor/gyro_onoff
     chown system system /sys/devices/platform/motion_sensor/gyro_delay
-    chown system system /sys/bus/i2c/drivers/hub_proxi/3-0044/onoff
-    chown system system /sys/bus/i2c/drivers/hub_proxi/3-0044/delay
+# [[ LGE_UBIQUIX_MODIFIED_START : shyun@ubiquix.com [2011.10.06] - Motion sensor permission is modified.
+    chown system system /sys/devices/platform/motion_sensor/composite_onoff
+    chown system system /sys/devices/platform/motion_sensor/composite_delay
+# ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.10.06]- Motion sensor permission is modified.
+# [[ LGE_UBIQUIX_MODIFIED_START : shyun@ubiquix.com [2011.09.28] - Motion sensor permission is modified.
+	chown system system /sys/devices/platform/motion_sensor/cal_onoff
+# ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.09.28]- Motion sensor permission is modified.
+# [[ LGE_UBIQUIX_MODIFIED_START : shyun@ubiquix.com [2011.09.19] - Proximity sensor sysfs file path is modified.
+    chown system system /sys/bus/i2c/drivers/black_proxi/3-0044/onoff
+    chown system system /sys/bus/i2c/drivers/black_proxi/3-0044/delay
+# ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.09.19]- Proximity sensor sysfs file path is modified.
     chown system system /sys/devices/platform/motion_sensor/shake_onoff
     chown system system /sys/bus/i2c/drivers/kxtf9/3-000f/shake_onoff
     chown system system /sys/devices/platform/motion_sensor/snap_onoff
@@ -388,67 +358,51 @@ on boot
     chown system system /sys/devices/platform/motion_sensor/yawimage_onoff
     chown system system /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkresult
     chown system system /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkopmode
-    chmod 0666 /sys/devices/platform/motion_sensor/accel_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/accel_delay
-    chmod 0666 /sys/devices/platform/motion_sensor/compass_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/compass_delay
-    chmod 0666 /sys/devices/platform/motion_sensor/tilt_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/tilt_delay
-    chmod 0666 /sys/devices/platform/motion_sensor/gyro_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/gyro_delay
-    chmod 0666 /sys/bus/i2c/drivers/hub_proxi/3-0044/onoff
-    chmod 0666 /sys/bus/i2c/drivers/hub_proxi/3-0044/delay
-    chmod 0666 /sys/devices/platform/motion_sensor/shake_onoff
-    chmod 0666 /sys/bus/i2c/drivers/kxtf9/3-000f/shake_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/snap_onoff
-    chmod 0666 /sys/bus/i2c/drivers/kxtf9/3-000f/snap_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/flip_onoff
-    chmod 0666 /sys/bus/i2c/drivers/kxtf9/3-000f/flip_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/tap_onoff
-    chmod 0666 /sys/bus/i2c/drivers/kxtf9/3-000f/tap_onoff
-    chmod 0666 /sys/devices/platform/motion_sensor/yawimage_onoff
-    chmod 0666 /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkresult
-    chmod 0666 /sys/devices/platform/i2c-gpio.7/i2c-adapter/i2c-7/7-001c/checkopmode
+# [[ LGE_UBIQUIX_MODIFIED_START : shyun@ubiquix.com [2011.09.19] - Sensors Permission is modified. For CTS Fail.
+    chmod 0664 /sys/devices/platform/motion_sensor/accel_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/accel_delay
+    chmod 0664 /sys/devices/platform/motion_sensor/compass_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/compass_delay
+    chmod 0664 /sys/devices/platform/motion_sensor/tilt_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/tilt_delay
+    chmod 0664 /sys/devices/platform/motion_sensor/gyro_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/gyro_delay
+# [[ LGE_UBIQUIX_MODIFIED_START : shyun@ubiquix.com [2011.09.19] - Proximity sensor sysfs file path is modified.
+    chmod 0664 /sys/bus/i2c/drivers/black_proxi/3-0044/onoff
+    chmod 0664 /sys/bus/i2c/drivers/black_proxi/3-0044/delay
+# ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.09.19]- Proximity sensor sysfs file path is modified.
+    chmod 0664 /sys/devices/platform/motion_sensor/shake_onoff
+    chmod 0664 /sys/bus/i2c/drivers/kxtf9/3-000f/shake_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/snap_onoff
+    chmod 0664 /sys/bus/i2c/drivers/kxtf9/3-000f/snap_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/flip_onoff
+    chmod 0664 /sys/bus/i2c/drivers/kxtf9/3-000f/flip_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/tap_onoff
+    chmod 0664 /sys/bus/i2c/drivers/kxtf9/3-000f/tap_onoff
+    chmod 0664 /sys/devices/platform/motion_sensor/yawimage_onoff
+# ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.09.19]- Sensors Permission is modified. For CTS Fail.
 
-    chmod 0666 /sys/devices/platform/omapdss/display0/name
-    chmod 0666 /sys/devices/platform/omapdss/display1/name
-    chmod 0666 /sys/devices/platform/omapdss/display0/enabled
-    chmod 0666 /sys/devices/platform/omapdss/display1/enabled
-    chmod 0666 /sys/devices/platform/omapdss/display0/timings
-    chmod 0666 /sys/devices/platform/omapdss/display1/timings
-    chmod 0666 /sys/devices/platform/omapdss/overlay0/manager
-    chmod 0666 /sys/devices/platform/omapdss/overlay1/manager
-    chmod 0666 /sys/devices/platform/omapdss/overlay2/manager
-    chmod 0666 /sys/devices/platform/omapdss/overlay0/zorder
-    chmod 0666 /sys/devices/platform/omapdss/overlay1/zorder
-    chmod 0666 /sys/devices/platform/omapdss/overlay2/zorder
-    chmod 0666 /sys/devices/platform/omapdss/overlay0/enabled
-    chmod 0666 /sys/devices/platform/omapdss/overlay1/enabled
-    chmod 0666 /sys/devices/platform/omapdss/overlay2/enabled
-    chmod 0666 /sys/devices/platform/omapdss/manager0/display
-    chmod 0666 /sys/devices/platform/omapdss/manager1/display
-    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_enabled
-    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_enabled
-    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_type
-    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_type
-    chmod 0666 /sys/devices/platform/omapdss/manager0/trans_key_value
-    chmod 0666 /sys/devices/platform/omapdss/manager1/trans_key_value
-    chmod 0666 /sys/devices/platform/omapdss/manager0/alpha_blending_enabled
-    chmod 0666 /sys/devices/platform/omapdss/manager1/alpha_blending_enabled
-    write /sys/devices/platform/omapdss/manager0/alpha_blending_enabled 1
+    # Batt gauge error detection
+    chown radio system /sys/bus/platform/drivers/twl4030_bci/twl4030_bci/gauge_if
+    chmod 0664 /sys/bus/platform/drivers/twl4030_bci/twl4030_bci/gauge_if
+    
+    #modify soc-audio permission
+    chown system system /sys/devices/platform/soc-audio/codec_reg
+    chown system system /sys/bus/i2c/drivers/wm9093/2-006e/wm9093_data
+    chown system system /sys/devices/platform/soc-audio/IFX_CALL/codec_reg 
+    chown system system /sys/devices/platform/soc-audio/TWL4030_FM/codec_reg
+    chown system system /sys/devices/platform/soc-audio/TWL4030_I2S/codec_reg
+    chown system system /sys/devices/platform/soc-audio/TWL4030_PCM/codec_reg
+    chmod 771 /sys/devices/platform/soc-audio/IFX_CALL/codec_reg 
+    chmod 644 /sys/devices/platform/soc-audio/TWL4030_FM/codec_reg
+    chmod 644 /sys/devices/platform/soc-audio/TWL4030_I2S/codec_reg
+    chmod 644 /sys/devices/platform/soc-audio/TWL4030_PCM/codec_reg
+    
+    # ALS
+    chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
+    chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
 
-# MMS: Create log directory for fw3a_core
-    mkdir /data/log/fw3A 0775 root root
-
-# change permissions for alsa nodes
-    symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
-    symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
-    symlink /dev/snd/controlC0 /dev/controlC0
-    symlink /dev/snd/timer /dev/timer
-    chmod 0777 /dev/pcmC0D0c
-    chmod 0777 /dev/pcmC0D0p
-    chmod 0777 /dev/controlC0
-    chmod 0777 /dev/timer
+## OLD
 
     chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
@@ -468,9 +422,7 @@ on boot
     # Permissions for setting the DSP Frequency
     chown media root /sys/power/dsp_freq
     chown media system /sys/devices/platform/omap3isp/isp_reserve
-
-# Include extra init file
-    import /system/etc/init.local.rc
+    chown media media /sys/devices/platform/omapdss/manager0/dmb_coefs
 
 # gps permissions
     chown system system /sys/devices/platform/hub_gps_gpio/poweron
@@ -510,205 +462,64 @@ on boot
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14
 
-# Run sysinit
-    exec /system/bin/sysinit
-
-    class_start default
-
-## Daemon processes to be run by init.
-##
-service ueventd /sbin/ueventd
-    critical
-
 service prb /sbin/prb
     user root
     disabled
     oneshot
     keycodes 114 116
 
-service console /system/bin/sh
-    console
-    disabled
-    user shell
-    group log
-
-on property:ro.secure=0
-    start console
-
-# adbd is controlled by the persist.service.adb.enable system property
-service adbd /sbin/adbd
-    disabled
-
-# adbd on at boot in emulator
-on property:ro.kernel.qemu=1
-    start adbd
-
-on property:persist.service.adb.enable=1
-    start adbd
-
-on property:persist.service.adb.enable=0
-    stop adbd
-
-on property:service.adb.tcp.port=5555
-    restart adbd
-
-on property:service.adb.tcp.port=-1
-    restart adbd
-
 service pvrsrvinit /system/bin/pvrsrvinit
+    class core
         user root
         oneshot
 
 # load DSP firmware
 service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
+    class core
     user root
     group audio
     oneshot
 
-service fw3a /system/bin/fw3a_core --dbgport=6660 --dbgremote --dbgpath=/data/log/fw3A
-    user root
-    group root
-
-service servicemanager /system/bin/servicemanager
-    user system
-    critical
-    onrestart restart zygote
-    onrestart restart media
-
-service vold /system/bin/vold
-    socket vold stream 0660 root mount
-    ioprio be 2
-
-service netd /system/bin/netd
-    socket netd stream 0660 root system
-    socket dnsproxyd stream 0660 root inet
-
-service debuggerd /system/bin/debuggerd
-
-service ril-daemon /system/bin/rild
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio sdcard_rw net_admin net_raw
-
-service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
-    socket zygote stream 666
-    onrestart write /sys/android_power/request_state wake
-    onrestart write /sys/power/state on
-    onrestart restart media
-    onrestart restart netd
-
-service media /system/bin/mediaserver
+service fw3a /system/bin/fw3a_core
+    class main
     user media
-    group system audio camera graphics inet net_bt net_bt_admin net_raw
-    ioprio rt 4
-
-service bootanim /system/bin/bootanimation
-    user graphics
-    group graphics
-    disabled
-    oneshot
-
-service dbus /system/bin/dbus-daemon --system --nofork
-    socket dbus stream 660 bluetooth bluetooth
-    user bluetooth
-    group bluetooth net_bt_admin
-
-service bluetoothd /system/bin/bluetoothd -n
-    socket bluetooth stream 660 bluetooth bluetooth
-    socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
-    group bluetooth net_bt_admin misc
-    disabled
-
-service hfag /system/bin/sdptool add --channel=10 HFAG
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service hsag /system/bin/sdptool add --channel=11 HSAG
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service opush /system/bin/sdptool add --channel=12 OPUSH
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service pbap /system/bin/sdptool add --channel=19 PBAP
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service map /system/bin/sdptool add --channel=16 MAS
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service installd /system/bin/installd
-    socket installd stream 600 system system
-
-service racoon /system/bin/racoon
-    socket racoon stream 600 system system
-    # racoon will setuid to vpn after getting necessary resources.
-    group net_admin
-    disabled
-    oneshot
-
-service mtpd /system/bin/mtpd
-    socket mtpd stream 600 system system
-    user vpn
-    group vpn net_admin net_raw
-    disabled
-    oneshot
-
-service keystore /system/bin/keystore /data/misc/keystore
-    user keystore
-    group keystore
-    socket keystore stream 666
-
-service dumpstate /system/bin/dumpstate -s
-    socket dumpstate stream 0660 shell log
-    disabled
-    oneshot
+    group system camera
 
 service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
+    class core
     user root
     group system
 
 on property:dev.bootcomplete=1
-    write /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable 0
+    write /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/blink_enable 0
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
     #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
     #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 40000
     write /sys/devices/system/cpu/cpu0/cpufreq/turn_on_lg_dvfs 1
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -BKA wlan0
+service dhcpcd_wlan0 /system/bin/dhcpcd -BKAL
+    class main
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
+    class main
     disabled
     oneshot
 
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd_wlan0
 
-service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf #-dd
+service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf 
+    class main
     socket wpa_wlan0 dgram 660 wifi wifi
-    group system wifi inet
     disabled
+    oneshot
 
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --baudrate 3000000 --patchram /etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd /dev/ttyO1
     user bluetooth
+    class main
     group bluetooth net_bt_admin
     disabled
 
@@ -718,5 +529,30 @@ service rawip_vsnet1 /system/bin/init.vsnet 1
    disabled
    oneshot
 
+service rawip_vsnet2 /system/bin/init.vsnet 2
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service vsnet1_down /system/bin/init.vsnet-down 1
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service vsnet2_down /system/bin/init.vsnet-down 2
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
 service wlan_precheck /system/bin/wlan-precheck
+    class core
     oneshot
+
+service motion /system/bin/motion
+    class main
+    user compass
+    group system
+
