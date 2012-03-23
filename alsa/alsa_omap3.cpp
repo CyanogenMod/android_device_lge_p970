@@ -552,7 +552,9 @@ LOGV("%s", __FUNCTION__);
         if (devices & AudioSystem::DEVICE_IN_BUILTIN_MIC) {
             control.set("Analog Left Main Mic Capture Switch", 1); // on
             control.set("Analog Right Sub Mic Capture Switch", 1); // on
+            control.set("Analog Capture Volume", 3);
         } else {
+            control.set("Analog Capture Volume", (unsigned int)0);
             control.set("Analog Left Main Mic Capture Switch", (unsigned int)0); // off
             control.set("Analog Right Sub Mic Capture Switch", (unsigned int)0); // off
         }
