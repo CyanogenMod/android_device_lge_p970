@@ -552,7 +552,9 @@ LOGV("%s", __FUNCTION__);
         if (devices & AudioSystem::DEVICE_IN_BUILTIN_MIC) {
             control.set("Analog Left Main Mic Capture Switch", 1); // on
             control.set("Analog Right Sub Mic Capture Switch", 1); // on
+            control.set("Analog Capture Volume", 3);
         } else {
+            control.set("Analog Capture Volume", (unsigned int)0);
             control.set("Analog Left Main Mic Capture Switch", (unsigned int)0); // off
             control.set("Analog Right Sub Mic Capture Switch", (unsigned int)0); // off
         }
@@ -575,6 +577,7 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     handle->curChannels = channels;
     /* In-call is handled by the voice modem stuff */
     if (mode != AudioSystem::MODE_IN_CALL) {
+	control.set("DAC2 Analog Playback Volume", 9); // 50%
         if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET ||
             devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
             control.set("ExtAmp", "Headset");
@@ -770,12 +773,19 @@ static status_t s_fmvolume(float volume)
 
     ALSAControl control("hw:00");
     control.set("Analog Capture Volume",0,0);
-    if (vol) {
-        sprintf(level,"LEVEL_%d",vol);
+    if (isFmOn) {
+        if (vol) {
+            sprintf(level,"LEVEL_%d",vol);
+        } else {
+            sprintf(level,"LEVEL_OFF");
+        }
+        control.set("FMradio",level);
     } else {
-        sprintf(level,"OFF");
+        /* Reset the amplifier just to be sure */
+        unsigned int curampval;
+        control.get("ExtAmp",curampval,0);
+        control.set("ExtAmp",curampval,0);
     }
-    control.set("FMradio",level);
     return status;
 }
 #endif
