@@ -339,22 +339,7 @@ status_t AudioModemAlsa::voiceCallCodecBTPCMSet()
 {
     status_t error = NO_ERROR;
 
-    error = mAlsaControl->set("BT Digital Playback Volume",
-                             AUDIO_CODEC_VOICE_DIGITAL_VOL_BLUETOOTH, 0);
-    error = mAlsaControl->set("BT Digital Capture Volume",
-                             AUDIO_CODEC_VOICE_DIGITAL_CAPTURE_VOL_BLUETOOTH, 0);
-    error = mAlsaControl->set("BT Sidetone Volume",
-                             AUDIO_CODEC_SIDETONE_GAIN_BLUETOOTH, 0);
-
-    error = mAlsaControl->set("BT data out playback MUX", "VDR data");
-    error = mAlsaControl->set("Voice data out MUX", "BT data");
-
     error = mAlsaControl->set("BT I/O Swap", "BTVDX/BTVDR not swapped");
-
-    error = mAlsaControl->set("BT Tristate Switch", 0, 0);
-    error = mAlsaControl->set("Enable BT input", 1, 0);
-    error = mAlsaControl->set("Enable BT output", 1, 0);
-    error = mAlsaControl->set("BT Interface Switch", 1, 0);
 
     return error;
 }
@@ -364,20 +349,6 @@ status_t AudioModemAlsa::voiceCallCodecBTPCMReset()
     status_t error = NO_ERROR;
 
     // Disable BT path
-    error = mAlsaControl->set("BT Digital Playback Volume",
-                             0, 0);
-    error = mAlsaControl->set("BT Digital Capture Volume",
-                             0, 0);
-    error = mAlsaControl->set("BT Sidetone Volume",
-                             0, 0);
-
-    error = mAlsaControl->set("BT data out playback MUX", "VTx data");
-    error = mAlsaControl->set("Voice data out MUX", "VTx data");
-
-    error = mAlsaControl->set("BT Tristate Switch", 1, 0);
-    error = mAlsaControl->set("Enable BT input", 0, 0);
-    error = mAlsaControl->set("Enable BT output", 0, 0);
-    error = mAlsaControl->set("BT Interface Switch", 0, 0);
 
     return error;
 }
@@ -415,8 +386,6 @@ status_t AudioModemAlsa::voiceCallCodecSetHandset()
         error = mAlsaControl->set("ExtAmp", "Bypass");
         error = mAlsaControl->set("Voice", "Receiver");
 
-        error = mAlsaControl->set("Analog Capture Main Mic Switch", 1, 0);
-        error = mAlsaControl->set("Main Microphone Bias Switch", 1, 0);
         error = mAlsaControl->set("Analog Capture Volume",
                                 AUDIO_CODEC_ANAMIC_GAIN_HANDSET_L, 0);
         error = mAlsaControl->set("TX2 Capture Route", "Analog");
@@ -458,8 +427,6 @@ status_t AudioModemAlsa::voiceCallCodecSetHandfree()
     error = mAlsaControl->set("ExtAmp", "Spkcall");
     error = mAlsaControl->set("Voice", "Speaker");
 
-    error = mAlsaControl->set("Analog Capture Main Mic Switch", 1, 0);
-    error = mAlsaControl->set("Main Microphone Bias Switch", 1, 0);
     error = mAlsaControl->set("Analog Capture Volume",
                              AUDIO_CODEC_ANAMIC_GAIN_HANDFREE_L, 0);
     error = mAlsaControl->set("TX2 Capture Route", "Analog");
@@ -537,7 +504,7 @@ status_t AudioModemAlsa::voiceCallCodecSetBluetooth()
 {
     status_t error = NO_ERROR;
 
-    error = voiceCallCodecBTPCMSet();
+    //error = voiceCallCodecBTPCMSet();
 
     return error;
 }
@@ -553,8 +520,6 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandset()
 
         // Capture path
         if (mPreviousAudioModemModes == AudioModemInterface::AUDIO_MODEM_HEADSET) {
-            error = mAlsaControl->set("Analog Capture Main Mic Switch", 1, 0);
-            error = mAlsaControl->set("Main Microphone Bias Switch", 1, 0);
 #ifdef AUDIO_BLUETOOTH
         } else if (mPreviousAudioModemModes ==
                     AudioModemInterface::AUDIO_MODEM_BLUETOOTH) {
@@ -609,8 +574,6 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandfree()
 
     // Capture path
     if (mPreviousAudioModemModes == AudioModemInterface::AUDIO_MODEM_HEADSET) {
-        error = mAlsaControl->set("Analog Capture Main Mic Switch", 1, 0);
-        error = mAlsaControl->set("Main Microphone Bias Switch", 1, 0);
 #ifdef AUDIO_BLUETOOTH
     } else if (mPreviousAudioModemModes ==
                 AudioModemInterface::AUDIO_MODEM_BLUETOOTH) {
@@ -663,8 +626,6 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHeadset()
     // Capture path
     if ((mPreviousAudioModemModes == AudioModemInterface::AUDIO_MODEM_HANDSET) ||
         (mPreviousAudioModemModes == AudioModemInterface::AUDIO_MODEM_HANDFREE)) {
-        error = mAlsaControl->set("Analog Capture Main Mic Switch", 0, 0);
-        error = mAlsaControl->set("Main Microphone Bias Switch", 0, 0);
 #ifdef AUDIO_BLUETOOTH
     } else if (mPreviousAudioModemModes ==
                     AudioModemInterface::AUDIO_MODEM_BLUETOOTH) {
@@ -715,7 +676,7 @@ status_t AudioModemAlsa::voiceCallCodecUpdateBluetooth()
 
     error = voiceCallCodecStop();
 
-    error = voiceCallCodecBTPCMSet();
+    //error = voiceCallCodecBTPCMSet();
 
     return error;
 }
@@ -772,8 +733,6 @@ status_t AudioModemAlsa::voiceCallCodecStop()
     error = mAlsaControl->set("TX2 Digital Capture Volume", 0, 0);
     error = mAlsaControl->set("TX2 Digital Capture Volume", 0, 1);
 
-    error = mAlsaControl->set("Analog Capture Main Mic Switch", 0, 0);
-    error = mAlsaControl->set("Main Microphone Bias Switch", 0, 0);
 
     if (!strcmp(mDevicePropPrevious->settingsList[AUDIO_MODEM_VOICE_CALL_MULTIMIC].name,
                 "Yes")) {
