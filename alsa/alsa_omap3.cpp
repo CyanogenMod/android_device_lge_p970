@@ -576,11 +576,16 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     handle->curMode = mode;
     handle->curChannels = channels;
     /* In-call is handled by the voice modem stuff */
-    if (mode != AudioSystem::MODE_IN_CALL) {
+    if (mode != AudioSystem::MODE_IN_CALL &&
+        AudioSystem::DEVICE_OUT_ALL & devices) {
 	control.set("DAC2 Analog Playback Volume", 9); // 50%
+        control.set("Earpiece Mixer AudioL2", (unsigned int)0);
         if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET ||
             devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
             control.set("ExtAmp", "Headset");
+        } else if (devices & AudioSystem::DEVICE_OUT_EARPIECE) {
+            control.set("ExtAmp", "Bypass");
+            control.set("Earpiece Mixer AudioL2", 1);
         } else {
             control.set("ExtAmp", "Speaker");
         }
@@ -728,6 +733,10 @@ static status_t s_route(alsa_handle_t *handle, uint32_t devices, int mode)
 #ifdef AUDIO_MODEM_TI
             ALSAControl control("hw:00");
             status = audioModem->voiceCallControls(devices, mode, &control);
+	    /* Reset the amplifier just to be sure */
+	    unsigned int curampval;
+	    control.get("ExtAmp",curampval,0);
+	    control.set("ExtAmp",curampval,0);
 #endif
     }
 
