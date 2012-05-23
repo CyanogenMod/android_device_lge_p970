@@ -43,7 +43,7 @@ namespace android
         dev, name, NULL\
     }
 
-static unsigned int lastSetVolume = 0;
+static unsigned int lastSetVolume = -1;
 static voiceCallVolumeList
 voiceCallVolumeProp[] = {
     VOICE_CALL_VOLUME_PROP(AudioModemInterface::AUDIO_MODEM_HANDSET,
@@ -411,7 +411,7 @@ status_t AudioModemAlsa::voiceCallCodecSetHandset()
 
         // Playback path
         error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                                lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
+                                lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
         error = mAlsaControl->set("Voice Digital Loopback Volume",
                                 AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);
     }
@@ -452,7 +452,7 @@ status_t AudioModemAlsa::voiceCallCodecSetHandfree()
 
     // Playback path
     error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                             lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
+                             lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
                              AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);
 
@@ -492,7 +492,7 @@ status_t AudioModemAlsa::voiceCallCodecSetHeadset()
 
     // Playback path
     error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                             lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
+                             lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
                              AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);
 
@@ -556,7 +556,7 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandset()
 
         // Playback path
         error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                                lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
+                                lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDSET, 0);
         error = mAlsaControl->set("Voice Digital Loopback Volume",
                                 AUDIO_CODEC_SIDETONE_GAIN_HANDSET, 0);
 
@@ -610,7 +610,7 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHandfree()
 
     // Playback path
     error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                            lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
+                            lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HANDFREE, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
                             AUDIO_CODEC_SIDETONE_GAIN_HANDFREE, 0);
 
@@ -662,7 +662,7 @@ status_t AudioModemAlsa::voiceCallCodecUpdateHeadset()
 
     // Playback path
     error = mAlsaControl->set("DAC Voice Digital Downlink Volume",
-                            lastSetVolume ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
+                            lastSetVolume >= 0 ? lastSetVolume : AUDIO_CODEC_VOICE_DIGITAL_VOL_HEADSET, 0);
     error = mAlsaControl->set("Voice Digital Loopback Volume",
                             AUDIO_CODEC_SIDETONE_GAIN_HEADSET, 0);
 
