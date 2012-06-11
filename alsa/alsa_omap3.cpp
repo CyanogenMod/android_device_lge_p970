@@ -578,7 +578,7 @@ void setAlsaControls(alsa_handle_t *handle, uint32_t devices, int mode, uint32_t
     /* In-call is handled by the voice modem stuff */
     if (mode != AudioSystem::MODE_IN_CALL &&
         AudioSystem::DEVICE_OUT_ALL & devices) {
-	control.set("DAC2 Analog Playback Volume", 9); // 50%
+	control.set("DAC2 Analog Playback Volume", 13); // 72%
         control.set("Earpiece Mixer AudioL2", (unsigned int)0);
         if (devices & AudioSystem::DEVICE_OUT_WIRED_HEADSET ||
             devices & AudioSystem::DEVICE_OUT_WIRED_HEADPHONE) {
