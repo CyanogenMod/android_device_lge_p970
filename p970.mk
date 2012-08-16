@@ -115,40 +115,6 @@ PRODUCT_PACKAGES += \
     libOMX.TI.AMR.decode \
     libOMX.TI.G726.decode
 
-## Audio prebuilts from gingerbread. These can't be built on an ICS tree, so
-## pull them from a CM7 build
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/audio/etc/asound.conf:system/etc/asound.conf \
-    $(LOCAL_PATH)/prebuilt/audio/lib/liba2dp.so:system/lib/liba2dp.so \
-    $(LOCAL_PATH)/prebuilt/audio/lib/hw/alsa.p970.so:system/lib/hw/alsa.p970.so \
-    $(LOCAL_PATH)/prebuilt/audio/lib/libaudiomodemgeneric.so:system/lib/libaudiomodemgeneric.so \
-    $(LOCAL_PATH)/prebuilt/audio/lib/libasound.so:system/lib/libasound.so \
-    $(LOCAL_PATH)/prebuilt/audio/lib/libaudio.so:obj/lib/libaudio.so \
-    $(LOCAL_PATH)/prebuilt/audio/lib/libaudio.so:system/lib/libaudio.so \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/dsnoop.conf:system/usr/share/alsa/pcm/dsnoop.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/center_lfe.conf:system/usr/share/alsa/pcm/center_lfe.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/modem.conf:system/usr/share/alsa/pcm/modem.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/dpl.conf:system/usr/share/alsa/pcm/dpl.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/default.conf:system/usr/share/alsa/pcm/default.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/surround50.conf:system/usr/share/alsa/pcm/surround50.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/surround51.conf:system/usr/share/alsa/pcm/surround51.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/rear.conf:system/usr/share/alsa/pcm/rear.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/surround71.conf:system/usr/share/alsa/pcm/surround71.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/front.conf:system/usr/share/alsa/pcm/front.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/surround40.conf:system/usr/share/alsa/pcm/surround40.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/dmix.conf:system/usr/share/alsa/pcm/dmix.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/iec958.conf:system/usr/share/alsa/pcm/iec958.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/side.conf:system/usr/share/alsa/pcm/side.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/pcm/surround41.conf:system/usr/share/alsa/pcm/surround41.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/cards/aliases.conf:system/usr/share/alsa/cards/aliases.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/alsa.conf:system/usr/share/alsa/alsa.conf \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/00main:system/usr/share/alsa/init/00main \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/hda:system/usr/share/alsa/init/hda \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/help:system/usr/share/alsa/init/help \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/default:system/usr/share/alsa/init/default \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/info:system/usr/share/alsa/init/info \
-    $(LOCAL_PATH)/prebuilt/audio/usr/share/alsa/init/test:system/usr/share/alsa/init/test
-
 # OpenMAX IL configuration
 TI_OMX_POLICY_MANAGER := hardware/ti/omx/system/src/openmax_il/omx_policy_manager
 #    $(TI_OMX_POLICY_MANAGER)/src/policytable.tbl:system/etc/policytable.tbl \#
