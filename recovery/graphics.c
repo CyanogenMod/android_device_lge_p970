@@ -337,3 +337,17 @@ gr_pixel *gr_fb_data(void)
     return (unsigned short *) gr_mem_surface.data;
 }
 
+void gr_fb_blank(bool blank)
+{
+    int ret;
+
+    ret = ioctl(gr_fb_fd, FBIOBLANK, blank ? FB_BLANK_POWERDOWN : FB_BLANK_UNBLANK);
+    if (ret < 0)
+        perror("ioctl(): blank");
+}
+
+void gr_font_size(int *x, int *y)
+{
+    *x = gr_font->cwidth;
+    *y = gr_font->cheight;
+}

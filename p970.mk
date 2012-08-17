@@ -70,6 +70,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
 
+# Charger mode
+PRODUCT_PACKAGES += \
+    charger \
+    charger_res_images
+
 PRODUCT_PACKAGES += \
     prb \
     lgcpversion \

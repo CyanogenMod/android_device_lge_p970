@@ -577,3 +577,9 @@ service motion /system/bin/motion
 service setcpversion /system/bin/lgcpversion
     class main
     oneshot
+
+service charger /charger
+    class charger
+    user root
+    group root
+    oneshot
