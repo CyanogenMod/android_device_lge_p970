@@ -3,10 +3,9 @@ import init.p970.usb.rc
 on early-init
 
 # create mountpoints
-    mkdir /mnt 0775 root system
-    mkdir /mnt/sdcard 0000 system system
-    mkdir /mnt/emmc 0000 system system
-    symlink /mnt/sdcard /sdcard
+    mkdir /storage 0775 root system
+    mkdir /storage/sdcard0 0000 system system
+    symlink /storage/sdcard0 /sdcard
 
 on init
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
@@ -14,7 +13,7 @@ on init
     export DSP_PATH /system/lib/dsp
     export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
     export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
-    export EXTERNAL_STORAGE /mnt/sdcard
+    export EXTERNAL_STORAGE /storage/sdcard0
 
     # 2012.07.03 youmi.jun : To fix issue when CAMERA IPP enabled
     symlink /system/lib /lib
@@ -71,7 +70,11 @@ on post-fs-data
     setprop wifi.interface wlan0
 
 on boot
-## NEW
+
+    # Set mpu freq to 1GHz at boot time.
+    write /sys/power/vdd1_opp 4
+    #kernel debug
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     # Enabling sleep in idle path
     write /sys/kernel/debug/pm_debug/sleep_while_idle 1
@@ -87,29 +90,28 @@ on boot
     write /sys/kernel/debug/smartreflex/sr_mpu_iva/autocomp 1
 
     # Lower maximum frequency when screen is off
-	write /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 600000
+        write /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 600000
 
     # cpufreq interactive governor: timer 20ms, min sample 20ms, hispeed 800MHz
-	write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
-	write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 20000
-	write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 800000
+        write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+        write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 20000
+        write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 800000
 
-	#Enablig DVFS with ondemand governor
-	write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-	write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
-	write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
+        #Enablig DVFS with ondemand governor
+        write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+        write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
+        write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
-	# 2012.08.06, mannsik.chung@lge.com, Backup scaling governor. For use at zygot restart by GC.
-	# copy /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
-	write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak ondemand
+        # 2012.08.06, mannsik.chung@lge.com, Backup scaling governor. For use at zygot restart by GC.
+        # copy /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
+        write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak ondemand
 
-	chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-	chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
-
+        chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+        chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
     # autosuspend root hubs immediatly after attached devices
-	write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
-	write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
-   
+        write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
+        write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
+
     # change permissions for alsa nodes
     symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
     symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
@@ -487,7 +489,7 @@ service fw3a /system/bin/fw3a_core
 
 service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
     class core
-    user root
+    user system
     group system
 
 on property:dev.bootcomplete=1
