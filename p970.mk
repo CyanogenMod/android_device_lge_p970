@@ -7,24 +7,14 @@ $(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
-
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := device/lge/p970/kernel
-else
-	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
 ## Dummy file to help RM identify the model
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/dummy-rm:root/bootimages/ON_480x800_08fps_0000.rle
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.p970.rc:root/init.target.rc \
-    $(LOCAL_PATH)/init.p970.usb.rc:root/init.p970.usb.rc \
-    $(LOCAL_PATH)/ueventd.p970.rc:root/ueventd.rc \
+    $(LOCAL_PATH)/init.p970.rc:root/init.black.rc \
+    $(LOCAL_PATH)/init.p970.usb.rc:root/init.black.usb.rc \
+    $(LOCAL_PATH)/ueventd.p970.rc:root/ueventd.black.rc \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
 PRODUCT_COPY_FILES += \
@@ -64,7 +54,6 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifimac/wlan-precheck:system/bin/wlan-precheck \
-    $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
@@ -116,6 +105,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     hwcomposer.omap3 \
+    audio.a2dp.default \
     libaudioutils \
     libtiutils \
     libion \

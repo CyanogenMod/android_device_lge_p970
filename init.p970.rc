@@ -1,4 +1,4 @@
-import init.p970.usb.rc
+import init.black.usb.rc
 
 on early-init
 
