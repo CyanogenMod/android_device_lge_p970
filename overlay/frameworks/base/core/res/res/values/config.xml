@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <bool name="config_animateScreenLights">false</bool>
+
    <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">vsnet0</string>
 
