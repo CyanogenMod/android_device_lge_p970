@@ -21,5 +21,6 @@
 
 /dev/tspdrv              0666   system  system
 
+/dev/ttyO0 0600 system system
 /dev/ttyO1 0660 bluetooth bluetooth
 
