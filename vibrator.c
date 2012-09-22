@@ -62,6 +62,7 @@ int sendit(int timeout_ms)
     vibsample[3] = 64;
 
     if (timeout_ms) {
+        ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
         pthread_join( vibstop_pt, NULL );
         ioctl(fd,TSPDRV_ENABLE_AMP,&actuator);
         ioctl(fd,TSPDRV_MAGIC_NUMBER,&actuator);
@@ -70,8 +71,8 @@ int sendit(int timeout_ms)
         close(fd);
         pthread_create( &vibstop_pt, NULL, stopvib, (void *)timeout_ms);
     } else {
-        pthread_join( vibstop_pt, NULL );
         ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
+        pthread_join( vibstop_pt, NULL );
     }
 
     return 0;
