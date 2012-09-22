@@ -70,4 +70,5 @@
 
     <bool name="config_autoBrightnessButtonKeyboard">false</bool>
 
+    <bool name="config_bluetooth_adapter_quick_switch">false</bool>
 </resources>

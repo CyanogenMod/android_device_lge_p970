@@ -20,3 +20,6 @@
 /dev/pts*				  0660   radio   	radio
 
 /dev/tspdrv              0666   system  system
+
+/dev/ttyO1 0660 bluetooth bluetooth
+
