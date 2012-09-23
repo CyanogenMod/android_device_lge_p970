@@ -46,6 +46,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/init.vsnet:system/bin/init.vsnet \
     $(LOCAL_PATH)/init.vsnet-down:system/bin/init.vsnet-down
 
+# Radio fixes
+FRAMEWORKS_BASE_SUBDIRS += ../../$(LOCAL_PATH)/ril/
+
 ## GPS
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps_brcm_conf.xml:system/etc/gps_brcm_conf.xml
