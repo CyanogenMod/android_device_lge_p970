@@ -72,6 +72,8 @@ public class LGEInfineon extends RIL implements CommandsInterface {
         return data;
     }
 
+    static final int RIL_UNSOL_LGE_SIM_STATE_CHANGED = 1060;
+
     @Override
     protected void
     processUnsolicited (Parcel p) {
@@ -81,6 +83,7 @@ public class LGEInfineon extends RIL implements CommandsInterface {
 
         switch(response) {
             case RIL_UNSOL_ON_USSD: ret =  responseStrings(p); break;
+            case RIL_UNSOL_LGE_SIM_STATE_CHANGED: ret =  responseVoid(p); break;
             default:
                 // Rewind the Parcel
                 p.setDataPosition(dataPosition);
@@ -111,7 +114,15 @@ public class LGEInfineon extends RIL implements CommandsInterface {
                         new AsyncResult (null, resp, null));
                 }
                 break;
+            case RIL_UNSOL_LGE_SIM_STATE_CHANGED:
+                if (RILJ_LOGD) unsljLog(response);
+
+                if (mIccStatusChangedRegistrants != null) {
+                    mIccStatusChangedRegistrants.notifyRegistrants();
+                }
+                break;
         }
+
     }
 
 
