@@ -96,13 +96,15 @@ vendor/lib/egl/libEGL_POWERVR_SGX530_125.so
 vendor/lib/libpvr2d.so
 bin/glgps
 bin/pvrsrvctl
-bin/motion
 bin/fw3a_core
 bin/rild
 bin/pvrsrvinit
 lib/hw/audio_policy.default.so
 lib/hw/audio.primary.default.so
 lib/libtinyalsa.so
+lib/libmpl.so
+lib/libmllite.so
+lib/libmlplatform.so
 ### TEMPORARY -- These can be source-built, but we need the omapzoom omap3 repositories in CM
 bin/cexec.out
 lib/libbridge.so

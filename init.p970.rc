@@ -569,10 +569,10 @@ service wlan_precheck /system/bin/wlan-precheck
     class core
     oneshot
 
-service motion /system/bin/motion
-    class main
-    user compass
-    group system
+#service motion /system/bin/motion
+#    class main
+#    user compass
+#    group system
 
 service setcpversion /system/bin/lgcpversion
     class main
