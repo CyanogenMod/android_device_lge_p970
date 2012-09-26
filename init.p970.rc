@@ -349,6 +349,10 @@ on boot
     chown system system /sys/bus/i2c/drivers/black_proxi/3-0044/onoff
     chown system system /sys/bus/i2c/drivers/black_proxi/3-0044/delay
 # ]] LGE_UBIQUIX_MODIFIED_END : shyun@ubiquix.com [2011.09.19]- Proximity sensor sysfs file path is modified.
+    chown system system /sys/bus/i2c/drivers/hub_proxi/3-0044/onoff
+    chown system system /sys/bus/i2c/drivers/hub_proxi/3-0044/delay
+    chmod 0666 /sys/bus/i2c/drivers/hub_proxi/3-0044/onoff
+    chmod 0666 /sys/bus/i2c/drivers/hub_proxi/3-0044/delay
     chown system system /sys/devices/platform/motion_sensor/shake_onoff
     chown system system /sys/bus/i2c/drivers/kxtf9/3-000f/shake_onoff
     chown system system /sys/devices/platform/motion_sensor/snap_onoff
