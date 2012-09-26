@@ -8,8 +8,6 @@ on early-init
     symlink /storage/sdcard0 /sdcard
 
 on init
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
-
     export DSP_PATH /system/lib/dsp
     export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
     export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
@@ -89,28 +87,42 @@ on boot
     write /sys/kernel/debug/smartreflex/sr_core/autocomp 1
     write /sys/kernel/debug/smartreflex/sr_mpu_iva/autocomp 1
 
+    #Enablig DVFS with ondemand governor
+    #write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    #write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
+    #write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
+
+    # 2012.08.06, mannsik.chung@lge.com, Backup scaling governor. For use at zygot restart by GC.
+    # copy /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
+    #write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak ondemand
+
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    #chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
+
     # Lower maximum frequency when screen is off
-        write /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 600000
+    write /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 600000
 
-    # cpufreq interactive governor: timer 20ms, min sample 20ms, hispeed 800MHz
-        write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
-        write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 20000
-        write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 800000
+    # PowerHAL perms
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/screen_off_max_freq 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boostpulse 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/timer_rate 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 
 
-        #Enablig DVFS with ondemand governor
-        write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-        write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
-        write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
-
-        # 2012.08.06, mannsik.chung@lge.com, Backup scaling governor. For use at zygot restart by GC.
-        # copy /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
-        write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak ondemand
-
-        chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-        chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_bak
     # autosuspend root hubs immediatly after attached devices
-        write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
-        write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
+    write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
+    write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
 
     # change permissions for alsa nodes
     symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
@@ -513,10 +525,6 @@ service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
 
 on property:dev.bootcomplete=1
     write /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/blink_enable 0
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
-    #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
-    #write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 40000
-    write /sys/devices/system/cpu/cpu0/cpufreq/turn_on_lg_dvfs 1
     start setcpversion
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -BKAL

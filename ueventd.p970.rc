@@ -23,4 +23,3 @@
 
 /dev/ttyO0 0600 system system
 /dev/ttyO1 0660 bluetooth bluetooth
-
