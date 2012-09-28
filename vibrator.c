@@ -52,7 +52,7 @@ static void* stopvib( void * timer ) {
 
 int sendit(int timeout_ms)
 {
-    int fd = open("/dev/tspdrv",O_RDWR);
+    int fd = -1;
     int actuator = 0;
     int res = 0;
     int s = 0;
@@ -62,6 +62,7 @@ int sendit(int timeout_ms)
     vibsample[3] = 64;
 
     if (timeout_ms) {
+        fd = open("/dev/tspdrv",O_RDWR);
         ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
         pthread_join( vibstop_pt, NULL );
         ioctl(fd,TSPDRV_ENABLE_AMP,&actuator);
@@ -71,7 +72,9 @@ int sendit(int timeout_ms)
         close(fd);
         pthread_create( &vibstop_pt, NULL, stopvib, (void *)timeout_ms);
     } else {
+        fd = open("/dev/tspdrv",O_RDWR);
         ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
+        close(fd);
         pthread_join( vibstop_pt, NULL );
     }
 
