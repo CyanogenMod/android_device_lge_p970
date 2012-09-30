@@ -27,6 +27,7 @@
 #define TSPDRV_DISABLE_AMP                  _IO(TSPDRV_MAGIC_NUMBER & 0xFF, 4)
 
 static pthread_t vibstop_pt;
+static int tspfd = -1;
 
 int vibrator_exists()
 {
@@ -43,8 +44,8 @@ static void* stopvib( void * timer ) {
     int fd;
     int dummy = 0;
 
-    usleep((int)timer*1000);
     fd = open("/dev/tspdrv",O_RDWR);
+    usleep((int)timer*1000);
     ioctl(fd,TSPDRV_DISABLE_AMP,&dummy);
     close(fd);
     return 0;
@@ -52,7 +53,6 @@ static void* stopvib( void * timer ) {
 
 int sendit(int timeout_ms)
 {
-    int fd = -1;
     int actuator = 0;
     int res = 0;
     int s = 0;
@@ -61,20 +61,19 @@ int sendit(int timeout_ms)
     vibsample[0] = 0; vibsample[1] = 8; vibsample[2]=1; 
     vibsample[3] = 64;
 
+    if (tspfd < 0)
+        tspfd = open("/dev/tspdrv",O_RDWR);
+
     if (timeout_ms) {
-        fd = open("/dev/tspdrv",O_RDWR);
-        ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
+        ioctl(tspfd,TSPDRV_DISABLE_AMP,&actuator);
         pthread_join( vibstop_pt, NULL );
-        ioctl(fd,TSPDRV_ENABLE_AMP,&actuator);
-        ioctl(fd,TSPDRV_MAGIC_NUMBER,&actuator);
-        write(fd,&vibsample,4); // First hit triggers the sample processing
-        write(fd,&vibsample,4); // Now do it for real
-        close(fd);
+        ioctl(tspfd,TSPDRV_ENABLE_AMP,&actuator);
+        ioctl(tspfd,TSPDRV_MAGIC_NUMBER,&actuator);
+        write(tspfd,&vibsample,4); // First hit triggers the sample processing
+        write(tspfd,&vibsample,4); // Now do it for real
         pthread_create( &vibstop_pt, NULL, stopvib, (void *)timeout_ms);
     } else {
-        fd = open("/dev/tspdrv",O_RDWR);
-        ioctl(fd,TSPDRV_DISABLE_AMP,&actuator);
-        close(fd);
+        ioctl(tspfd,TSPDRV_DISABLE_AMP,&actuator);
         pthread_join( vibstop_pt, NULL );
     }
 
