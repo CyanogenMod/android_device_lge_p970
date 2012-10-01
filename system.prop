@@ -17,6 +17,7 @@ mobiledata.interfaces=vsnet0,vsnet1
 ro.telephony.ril_class=LGEInfineon
 
 ro.opengles.version=131072
+dalvik.vm.dexopt-data-only=1
 
 ro.com.google.clientidbase=android-lge
 ro.com.google.clientidbase.ms=android-lge
