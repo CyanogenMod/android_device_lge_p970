@@ -37,5 +37,6 @@
              android:storageDescription="@string/storage_sd_card"
              android:removable="true"
              android:primary="true"
+             android:allowMassStorage="true"
              android:emulated="false"/>
 </StorageList>
