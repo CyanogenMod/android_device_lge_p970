@@ -15,6 +15,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -24,10 +25,32 @@
 int main() {
 	int fd1; FILE *fd2;
 	int macbyte;
+	int addrcount = 0;
+	char macaddr[17];
 	int i;
 
 	fd1 = open("/dev/block/mmcblk0p11",O_RDONLY);
 	fd2 = fopen("/data/misc/wifi/config","w");
+
+	for (i = 0; i<6; i++) {
+		macbyte=0;
+		lseek(fd1,i+514,SEEK_SET);
+		read(fd1,&macbyte,1);
+		addrcount+=macbyte;
+		if (i)
+			sprintf(macaddr,"%s:%.2x",macaddr,macbyte);
+		else
+			sprintf(macaddr,"%.2x",macbyte);
+	}
+
+	close(fd1);
+
+	if (!addrcount) {
+		macbyte = rand()%255;
+		/* least significant bit must be off, else it's multicast */
+		if (macbyte & 1) macbyte--;
+		sprintf(macaddr,"0b:ad:c0:ff:ee:%x",macbyte);
+	}
 
 	fprintf(fd2,"vlan_mode=0\n\
 mpc=1\n\
@@ -43,19 +66,9 @@ roam_trigger=-70\n\
 PM=2\n\
 assoc_listen=1\n\
 assoc_retry_max=7\n\
-");
+cur_etheraddr=%s\n\
+",macaddr);
 
-	fprintf(fd2,"cur_etheraddr=");
-	for (i = 0; i<6; i++) {
-		macbyte=0;
-		lseek(fd1,i+514,SEEK_SET);
-		read(fd1,&macbyte,1);
-		fprintf(fd2,"%.2x",macbyte);
-		if (i!=5) fprintf(fd2,":");
-		else fprintf(fd2,"\n");
-	}
-
-	close(fd1);
 	fclose(fd2);
 	return 0;
 }
