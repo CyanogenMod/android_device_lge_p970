@@ -10,6 +10,7 @@
        
 	   />
   <hal 
+       acNtpServer="pool.ntp.org"
        acNmeaOutName="/data/gpspipe"  
        ResetOnStart="false"
        gpioDelayMs="80"
