@@ -31,3 +31,6 @@ ro.bt.bdaddr_path=/sys/devices/platform/bd_address/bdaddr_if
 ro.hardware.respect_als=true
 
 persist.sys.usb.config=mtp,adb
+
+## Limit activities
+sys.mem.max_hidden_apps=5
