@@ -113,6 +113,7 @@ struct omap3_hwc_device {
     hwc_composer_device_t base;
     hwc_procs_t *procs;
     pthread_t hdmi_thread;
+    pthread_t vsync_thread;
     pthread_mutex_t lock;
     int dsscomp_fd;
     int fb_fd;
@@ -1536,6 +1537,40 @@ static void handle_hotplug(omap3_hwc_device_t *hwc_dev, int state)
             hwc_dev->procs->invalidate(hwc_dev->procs);
 }
 
+static void *vsync_loop(void *param)
+{
+    static char buf[4096];
+    int fb0_vsync_fd;
+    fd_set exceptfds;
+    int res;
+    int64_t timestamp = 0;
+    omap3_hwc_device_t *hwc_dev = param;
+
+    fb0_vsync_fd = open("/sys/devices/platform/omapfb/graphics/fb0/vsync_time", O_RDONLY);
+    if (!fb0_vsync_fd)
+        return NULL;
+
+    setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
+    memset(buf, 0, sizeof(buf));
+
+    ALOGI("Using sysfs mechanism for VSYNC notification");
+
+    FD_ZERO(&exceptfds);
+    FD_SET(fb0_vsync_fd, &exceptfds);
+
+    do {
+        ssize_t len = read(fb0_vsync_fd, buf, sizeof(buf));
+        timestamp = strtoull(buf, NULL, 0);
+        if (hwc_dev->procs && hwc_dev->procs->vsync) {
+            hwc_dev->procs->vsync(hwc_dev->procs, 0, timestamp);
+        }
+        select(fb0_vsync_fd + 1, NULL, NULL, &exceptfds, NULL);
+        lseek(fb0_vsync_fd, 0, SEEK_SET);
+    } while (1);
+
+    return NULL;
+}
+
 static void handle_uevents(omap3_hwc_device_t *hwc_dev, const char *buff, int len)
 {
     int display_supp;
@@ -1785,6 +1820,12 @@ static int omap3_hwc_device_open(const hw_module_t* module, const char* name,
     if (pthread_create(&hwc_dev->hdmi_thread, NULL, omap3_hwc_hdmi_thread, hwc_dev))
     {
             ALOGE("failed to create uevent listening thread (%d): %m", errno);
+            err = -errno;
+            goto done;
+    }
+    if (pthread_create(&hwc_dev->vsync_thread, NULL, vsync_loop, hwc_dev))
+    {
+            ALOGE("failed to create vsync-sysfs listening thread (%d): %m", errno);
             err = -errno;
             goto done;
     }
