@@ -1757,7 +1757,7 @@ static int omap3_hwc_device_open(const hw_module_t* module, const char* name,
     memset(hwc_dev, 0, sizeof(*hwc_dev));
 
     hwc_dev->base.common.tag = HARDWARE_DEVICE_TAG;
-    hwc_dev->base.common.version = HWC_DEVICE_API_VERSION_0_3;
+    hwc_dev->base.common.version = HWC_API_VERSION;//use the emulation for now... HWC_DEVICE_API_VERSION_0_3;
     hwc_dev->base.common.module = (hw_module_t *)module;
     hwc_dev->base.common.close = omap3_hwc_device_close;
     hwc_dev->base.prepare = omap3_hwc_prepare;
