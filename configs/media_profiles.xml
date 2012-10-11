@@ -81,7 +81,7 @@
     <CamcorderProfiles cameraId="0">
 
         <EncoderProfile quality="qcif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="384000"
                    width="176"
                    height="144"
@@ -93,7 +93,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="cif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="2000000"
                    width="352"
                    height="288"
@@ -105,7 +105,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="480p" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="4000000"
                    width="640"
                    height="480"
@@ -116,7 +116,7 @@
                    channels="2" />
         </EncoderProfile>
 
-        <!--EncoderProfile quality="720p" fileFormat="mp4" duration="30">
+        <EncoderProfile quality="720p" fileFormat="mp4" duration="30">
             <Video codec="h264"
                    bitRate="4000000"
                    width="1280"
@@ -126,10 +126,10 @@
                    bitRate="96000"
                    sampleRate="48000"
                    channels="2" />
-        </EncoderProfile-->      
+        </EncoderProfile>      
 
         <EncoderProfile quality="timelapseqcif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="384000"
                    width="176"
                    height="144"
@@ -141,7 +141,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="timelapsecif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="2000000"
                    width="352"
                    height="288"
@@ -153,7 +153,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="timelapse480p" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="8000000"
                    width="640"
                    height="480"
@@ -165,7 +165,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="timelapse720p" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="12000000"
                    width="1280"
                    height="720"
@@ -187,7 +187,7 @@
     <CamcorderProfiles cameraId="1">
 
         <EncoderProfile quality="qcif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="384000"
                    width="176"
                    height="144"
@@ -199,7 +199,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="cif" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="2000000"
                    width="352"
                    height="288"
@@ -211,7 +211,7 @@
         </EncoderProfile>
 
         <EncoderProfile quality="480p" fileFormat="mp4" duration="30">
-            <Video codec="h263"
+            <Video codec="h264"
                    bitRate="4000000"
                    width="640"
                    height="480"
