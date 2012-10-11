@@ -66,6 +66,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/hub_synaptics_touch.kl:system/usr/keylayout/hub_synaptics_touch.kl \
     $(LOCAL_PATH)/configs/hub_synaptics_touch.idc:system/usr/idc/hub_synaptics_touch.idc
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/Hookkey.kl:system/usr/keylayout/Hookkey.kl
+
 ## Alsa configs
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
