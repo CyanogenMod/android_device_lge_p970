@@ -59,7 +59,7 @@ int sendit(int timeout_ms)
     char vibsample[4];
 
     vibsample[0] = 0; vibsample[1] = 8; vibsample[2]=1; 
-    vibsample[3] = 64;
+    vibsample[3] = 96;
 
     if (tspfd < 0)
         tspfd = open("/dev/tspdrv",O_RDWR);
