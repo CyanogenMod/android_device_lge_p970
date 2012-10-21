@@ -12,7 +12,7 @@ LOCAL_SRC_FILES := hwc.c
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_MODULE := hwcomposer.omap3
+LOCAL_MODULE := hwcomposer.black
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := -DLOG_TAG=\"ti_hwc\"
 # LOG_NDEBUG=0 means verbose logging enabled

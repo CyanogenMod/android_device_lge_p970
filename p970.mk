@@ -86,8 +86,10 @@ PRODUCT_PACKAGES += \
 
 # OMX components
 PRODUCT_PACKAGES += \
+    libstagefrighthw \
     libbridge \
     cexec.out \
+    libPERF \
     libOMX_Core \
     libLCML \
     libOMX.TI.Video.Decoder \
@@ -117,14 +119,12 @@ PRODUCT_PACKAGES += \
     libOMX.TI.G726.decode
 
 PRODUCT_PACKAGES += \
-    hwcomposer.omap3 \
+    hwcomposer.black \
     lights.p970 \
     audio.a2dp.default \
     libaudioutils \
     libtiutils \
     libion \
-    libbridge \
-    cexec.out \
     libomap_mm_library_jni
     #camera.omap3 \#
 
