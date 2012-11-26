@@ -4,14 +4,21 @@ on early-init
 
 # create mountpoints
     mkdir /storage 0775 root system
-    mkdir /storage/sdcard0 0000 system system
-    symlink /storage/sdcard0 /sdcard
+    mkdir /mnt/shell/sdcard 0700 shell shell
+    mkdir /storage/sdcard 0555 root root
+
+    export EXTERNAL_STORAGE /storage/sdcard/legacy
+
+    # Support legacy paths
+    symlink /storage/sdcard/legacy /sdcard
+    symlink /storage/sdcard/legacy /mnt/sdcard
+    symlink /storage/sdcard/legacy /storage/sdcard0
+    symlink /mnt/shell/sdcard/0 /storage/sdcard/legacy
 
 on init
     export DSP_PATH /system/lib/dsp
     export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
     export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
-    export EXTERNAL_STORAGE /storage/sdcard0
 
     # 2012.07.03 youmi.jun : To fix issue when CAMERA IPP enabled
     symlink /system/lib /lib

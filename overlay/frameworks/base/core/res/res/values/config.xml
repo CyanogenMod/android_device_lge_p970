@@ -8,12 +8,6 @@
 
     <bool name="config_disableMenuKeyInLockScreen">true</bool>
 
-    <!-- Package name providing network location support. -->
-    <string name="config_networkLocationProviderPackageName" translatable="false">com.google.android.location</string>
- 
-    <!-- Package name providing geocoder API support. -->
-    <string name="config_geocodeProviderPackageName" translatable="false">com.google.android.location</string>
-
     <bool name="config_automatic_brightness_available">true</bool>
 
     <!-- These are all dummies, but need to be present to enable UI control of auto-brightness
@@ -71,13 +65,9 @@
         <item>"wl0.1"</item>
     </string-array>
 
-    <bool name="config_autoBrightnessButtonKeyboard">false</bool>
-
-    <bool name="config_bluetooth_adapter_quick_switch">false</bool>
-
     <!-- Boolean indicating whether the start command should be called on the wireless interface
                   when starting the SoftAp -->
-    <bool name="config_wifiApStartInterface">true</bool>
+    <!--bool name="config_wifiApStartInterface">true</bool-->
 
     <!-- Default color for notification LED. -->
     <color name="config_defaultNotificationColor">#ff0000ff</color>
