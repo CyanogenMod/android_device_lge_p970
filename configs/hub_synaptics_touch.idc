@@ -22,7 +22,7 @@ touch.orientationAware = 1
 
 # Size
 touch.size.calibration = diameter
-touch.size.scale = 10
+touch.size.scale = 1
 touch.size.bias = 0
 touch.size.isSummed = 0
 
