@@ -2,11 +2,11 @@
 <glgps xmlns="http://www.glpals.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.glpals.com/ glconfig.xsd" >
   <!--HAL Confguration: Please make sure to split the hal configuration when it's bigger than 1K bytes. -->
   <hal 
-	  acPortName="/dev/ttyO0" lBaudRate="115200"  cLogEnabled="true" acLogDirectory="/data/gps/log" ltoFileName="lto.dat" 
+    acPortName="/dev/ttyO0" lBaudRate="460800"  cLogEnabled="true" acLogDirectory="/data/gps/log" ltoFileName="lto.dat" 
        enhanced-assisted="false"
               
        arp-supl-enable="true" arp-supl-cap-msb="true" arp-supl-cap-msa="true" arp-supl-cap-ecid="false"
-	   acSuplServer="lge.glpals.com" SuplPort="7275" 
+     acSuplServer="supl.google.com" SuplPort="7276" 
        
 	   />
   <hal 

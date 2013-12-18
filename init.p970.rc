@@ -455,16 +455,27 @@ on boot
 # gps permissions
     chown system system /sys/devices/platform/hub_gps_gpio/poweron
     chown system system /sys/devices/platform/hub_gps_gpio/reset
+    chown system system /dev/ttyO0
+    chown system system /dev/pts17
     mkdir /data/gps
     chmod 777 /data/gps
+    chown system system /data/gps
     mkdir /data/gps/var
     chmod 777 /data/gps/var
     mkdir /data/gps/var/run
     chmod 777 /data/gps/var/run
     mkdir /data/gps/log
     chmod 777 /data/gps/log
+    chown system system /data/gps/log
     mkdir /data/cache
     chmod 777 /data/cache
+    chown system system /data/cache
+
+#    chown root /system/bin/glgps
+    chown system system /system/bin/glgps
+    chown system system /system/etc/gps_brcm_conf.xml
+    chown system system /system/etc/cert/
+    chown system system /system/etc/cert/lge.cer
 
     ## Torch perms
     chown system camera /sys/class/leds/rt8515/brightness
@@ -529,9 +540,9 @@ service fw3a /system/bin/fw3a_core
     group system camera
 
 service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
-    class core
+    class main
     user system
-    group system
+    group net_raw sdcard_rw system radio
 
 on property:dev.bootcomplete=1
     write /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/blink_enable 0
